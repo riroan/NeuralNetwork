@@ -44,8 +44,6 @@ void Network::init_network(const Vector<int>& _num_neurons)
 		w[i].assign_random(0.0, 1.0);							// random initialization
 		//w[i].assign_random_n(sqrt(2.0 / _num_neurons[i]));	// Xe initialization
 		//w[i].assign_random_n(sqrt(1.0 / _num_neurons[i]));	// Xavier initialization
-
-		//w[i].print();
 	}
 }
 
@@ -213,7 +211,6 @@ void Network::getGradient_MSE(const Vector<double>& v)
 			layer_grad[last][i] = (last_value - v[i])*grad_LReLU(last_value);
 	}
 
-
 	for (int i = w.size - 1; i >= 0; i--)
 	{
 		layer_grad[i] = gradient_product(w[i], layer_grad[i + 1]);
@@ -226,7 +223,6 @@ void Network::getGradient_MSE(const Vector<double>& v)
 			else
 				layer_grad[i][j] *= grad_LReLU(neurons[i][j]);
 	}
-
 }
 
 Vector<double> Network::gradient_product(const matrix& w, const Vector<double>& layer)

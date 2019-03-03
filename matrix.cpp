@@ -103,6 +103,15 @@ double& matrix::operator[](const int& i)
 	return values[i];
 }
 
+void matrix::operator=(matrix right)
+{
+	row = right.row;
+	col = right.col;
+	values.resize(row * col);
+	for (int i = 0; i < row * col; i++)
+		values[i] = right[i];
+}
+
 matrix matrix::productTranspose(matrix right)
 {
 	matrix temp(right.col, right.row);
@@ -119,6 +128,29 @@ matrix matrix::Transpose()
 		for (int j = 0; j < col; j++)
 			temp.getValue(j, i) = getValue(i, j);
 	return temp;
+}
+
+Vector<double> matrix::M2V()
+{
+	Vector<double> ret(row * col);
+	for (int i = 0; i < row*col; i++)
+		ret[i] = values[i];
+	return ret;
+}
+
+bool matrix::isValid(const int& i, const int& j)
+{
+	return i >= 0 && i < row&&j >= 0 && j < col;
+}
+
+double matrix::Convolution(matrix m, const int& x, const int& y)
+{
+	double sum = 0.0;
+	for (int i = 0; i < m.row; i++)
+		for (int j = 0; j < m.col; j++)
+			if (isValid(x + i, y + j))
+				sum += getValue(x + i, y + j) * m.values[i*m.col + j];
+	return sum;
 }
 
 double dot(const Vector<double>& left, const Vector<double>& right)

@@ -27,6 +27,9 @@
     <ClInclude Include="Vector.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
+    <ClInclude Include="Convolution2D.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="matrix.cpp">
@@ -42,6 +45,9 @@
       <Filter>소스 파일</Filter>
     </ClCompile>
     <ClCompile Include="Convolution1D.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="Convolution2D.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
   </ItemGroup>
