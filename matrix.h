@@ -29,6 +29,8 @@ public:
 	Vector<double> M2V();					// matrix to vector
 	matrix productTranspose(matrix right);
 	matrix Transpose();
+	matrix applyPadding(const int& p);
+	matrix reverse();
 
 	// operator overloading
 	Vector<double> operator*(const Vector<double>& right);

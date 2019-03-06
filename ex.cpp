@@ -254,15 +254,20 @@ int main()
 	//for (auto i : c.output)
 	//	cout << " " << i;
 
-	Convolution2D conv(1, 3, 3, 0);
-	matrix input(5, 5);
-	input.assign_random(0.1, 1.0);
+	//Convolution2D conv(1, 3, 3, 0);
+	//matrix input(5, 5);
+	//input.assign_random(0.1, 1.0);
 
-	conv.setInput(input);
-	conv.input.print();
-	printf("\n");
-	conv.feedForward();
-	conv.output.print();
+	//conv.setInput(input);
+	//conv.input.print();
+	//printf("\n");
+	//conv.feedForward();
+	//conv.output.print();
+	
+	matrix m(3, 3);
+	m.assign_random(0.0, 1.0);
+	m.print();
+	m.applyPadding(2).print();
 }
 
 random_device generator;

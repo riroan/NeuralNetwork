@@ -138,6 +138,16 @@ Vector<double> matrix::M2V()
 	return ret;
 }
 
+matrix matrix::applyPadding(const int& p)
+{
+	matrix ret(row + 2 * p, col + 2 * p);
+	ret.assign_random(0.0, 0.0);
+	for (int i = 0; i < row; i++)
+		for (int j = 0; j < col; j++)
+			ret.getValue(i + p, j + p) = getValue(i, j);
+	return ret;
+}
+
 bool matrix::isValid(const int& i, const int& j)
 {
 	return i >= 0 && i < row&&j >= 0 && j < col;
@@ -189,4 +199,12 @@ void v_assign_random_n(Vector<double>& v, const double& s)
 
 	for (int i = 0; i < v.size; i++)
 		v[i] = distribution(rd) / s;
+}
+
+matrix matrix::reverse()
+{
+	matrix ret(row, col);
+	for (int i = 0; i < row*col; i++)
+		ret[i] = values[row*col - 1 - i];
+	return ret;
 }
