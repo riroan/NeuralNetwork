@@ -31,8 +31,6 @@ int main()
 
 	int correct = 0;
 
-
-
 	for (int r = 0; r < 10; r++)
 	{
 		//Network nn(2, 1, 1);
