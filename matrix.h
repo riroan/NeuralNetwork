@@ -1,7 +1,10 @@
 #pragma once
 #include "Vector.h"
 #include <random>
-#include <cassert>
+#define RELU 1
+#define LRELU 2
+#define SIGMOID 3
+#define SOFTMAX 4
 
 class matrix
 {
@@ -20,26 +23,27 @@ public:
 	void resize(const int& _row, const int& _col);
 	void assign_random(const double& min, const double& max);
 	void assign_random_n(const double& s);
-	void print();
+	void print() const;
 	void productTo(const Vector<double>& v, Vector<double>& to);
-	double Convolution(matrix m, const int& i, const int& j);
+	double Convolution(const matrix& m, const int& i, const int& j);
 	bool isValid(const int& x, const int& y);
-	double& getValue(const int& i, const int& j);
+	double& getValue(const int& i, const int& j) const;
 	Vector<double> getVector(const int& _size);
 	Vector<double> M2V();					// matrix to vector
-	matrix productTranspose(matrix right);
+	matrix productTranspose(const matrix& right);
 	matrix Transpose();
 	matrix applyPadding(const int& p);
 	matrix reverse();
 
 	// operator overloading
 	Vector<double> operator*(const Vector<double>& right);
-	double& operator[](const int& i);
-	matrix operator*(matrix right);
-	void operator=(matrix right);
+	double& operator[](const int& i) const;
+	matrix operator*(const matrix& right);
+	void operator=(const matrix& right);
 };
 
 void v_assign_random(Vector<double>& v, const double& min, const double& max);
 void v_assign_random_n(Vector<double>& v, const double& s);
 double dot(const Vector<double>& left, const Vector<double>& right);
 Vector<double> vsum(const Vector<double>& left, const Vector<double>& right);
+matrix V2M(const Vector<double>& v, const int& i, const int& j);

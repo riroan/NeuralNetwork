@@ -2,7 +2,7 @@
 #include<iostream>
 #include<windows.h>
 
-namespace act
+namespace activation
 {
 	const int sigmoid = 0;
 	const int relu = 1;
@@ -17,7 +17,7 @@ Network::Network(const int& _num_input, const int& _num_output, const int& _num_
 void Network::init_network(const Vector<int>& _num_neurons)
 {
 	output_softmax = false;
-	activation_type.resize(num_layer, act::relu);
+	activation_type.resize(num_layer, activation::relu);
 
 	neurons.resize(num_layer);
 	layer_grad.resize(num_layer);
@@ -124,9 +124,9 @@ void Network::feedForward()
 			return;
 		}
 
-		if (activation_type[i] == act::sigmoid)
+		if (activation_type[i] == activation::sigmoid)
 			apply_sigmoid(neurons[i + 1]);
-		else if (activation_type[i] == act::relu)
+		else if (activation_type[i] == activation::relu)
 			apply_ReLU(neurons[i + 1]);
 		else
 			apply_LReLU(neurons[i + 1]);
@@ -203,9 +203,9 @@ void Network::getGradient_MSE(const Vector<double>& v)
 	{
 		double last_value = neurons[last][i];
 		// MSE
-		if(activation_type[last] == act::sigmoid)
+		if(activation_type[last] == activation::sigmoid)
 			layer_grad[last][i] = (last_value - v[i])*grad_sigmoid(last_value);
-		else if(activation_type[last] == act::relu)
+		else if(activation_type[last] == activation::relu)
 			layer_grad[last][i] = (last_value - v[i])*grad_ReLU(last_value);
 		else
 			layer_grad[last][i] = (last_value - v[i])*grad_LReLU(last_value);
@@ -216,9 +216,9 @@ void Network::getGradient_MSE(const Vector<double>& v)
 		layer_grad[i] = gradient_product(w[i], layer_grad[i + 1]);
 
 		for (int j = 0; j < neurons[i].size - 1; j++)
-			if (activation_type[i] == act::sigmoid)
+			if (activation_type[i] == activation::sigmoid)
 				layer_grad[i][j] *= grad_sigmoid(neurons[i][j]);
-			else if (activation_type[i] == act::relu)
+			else if (activation_type[i] == activation::relu)
 				layer_grad[i][j] *= grad_ReLU(neurons[i][j]);
 			else
 				layer_grad[i][j] *= grad_LReLU(neurons[i][j]);

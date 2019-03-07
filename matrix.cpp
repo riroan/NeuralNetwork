@@ -16,7 +16,7 @@ matrix::matrix()
 	values.resize(0);
 }
 
-void matrix::print()
+void matrix::print() const
 {
 	for (int i = 0; i < row; i++)
 	{
@@ -70,7 +70,6 @@ void matrix::productTo(const Vector<double>& v, Vector<double>& to)
 
 Vector<double> matrix::operator*(const Vector<double>& right)
 {
-	//printf(" %d %d\n", col, right.size);
 	assert(col == right.size);
 	Vector<double> ret = getVector(row);
 	for (int i = 0; i < row; i++)
@@ -80,30 +79,31 @@ Vector<double> matrix::operator*(const Vector<double>& right)
 	return ret;
 }
 
-double& matrix::getValue(const int& i, const int& j)
+double& matrix::getValue(const int& i, const int& j) const
 {
 	return values[i*col + j];
 }
 
-matrix matrix::operator*(matrix right)
+matrix matrix::operator*(const matrix& right)
 {
 	assert(col == right.row);
 	matrix ret(row, right.col);
 	ret.assign_random(0.0, 0.0);
 
-	for(int i=0;i<row;i++)
-		for (int j = 0; j < col; j++)
-			ret.getValue(i, j) += getValue(i, j)*right.getValue(i, j);
+	for (int i = 0; i < ret.row; i++)
+		for (int j = 0; j < ret.col; j++)
+			for (int k = 0; k < col; k++)
+				ret.getValue(i, j) += getValue(i, k)*right.getValue(k, j);
 
 	return ret;
 }
 
-double& matrix::operator[](const int& i)
+double& matrix::operator[](const int& i) const
 {
 	return values[i];
 }
 
-void matrix::operator=(matrix right)
+void matrix::operator=(const matrix& right)
 {
 	row = right.row;
 	col = right.col;
@@ -112,7 +112,7 @@ void matrix::operator=(matrix right)
 		values[i] = right[i];
 }
 
-matrix matrix::productTranspose(matrix right)
+matrix matrix::productTranspose(const matrix& right)
 {
 	matrix temp(right.col, right.row);
 	for (int i = 0; i < right.row; i++)
@@ -153,7 +153,7 @@ bool matrix::isValid(const int& i, const int& j)
 	return i >= 0 && i < row&&j >= 0 && j < col;
 }
 
-double matrix::Convolution(matrix m, const int& x, const int& y)
+double matrix::Convolution(const matrix& m, const int& x, const int& y)
 {
 	double sum = 0.0;
 	for (int i = 0; i < m.row; i++)
@@ -185,7 +185,7 @@ Vector<double> vsum(const Vector<double>& left, const Vector<double>& right)
 
 void v_assign_random(Vector<double>& v, const double& min, const double& max)
 {
-	std::uniform_real_distribution distribution(min, max);
+	std::uniform_real_distribution<double> distribution(min, max);
 
 	for (int i = 0; i < v.size; i++)
 		//v[i] = distribution(rd);
@@ -194,7 +194,7 @@ void v_assign_random(Vector<double>& v, const double& min, const double& max)
 
 void v_assign_random_n(Vector<double>& v, const double& s)
 {
-	std::normal_distribution distribution(0.0, 1.0);
+	std::normal_distribution<double> distribution(0.0, 1.0);
 	//std::uniform_real_distribution distribution(-1.0, 1.0);
 
 	for (int i = 0; i < v.size; i++)
@@ -206,5 +206,14 @@ matrix matrix::reverse()
 	matrix ret(row, col);
 	for (int i = 0; i < row*col; i++)
 		ret[i] = values[row*col - 1 - i];
+	return ret;
+}
+
+matrix V2M(const Vector<double>& v, const int& i, const int& j)
+{
+	//assert(v.size == i * j);
+	matrix ret(i, j);
+	for (int r = 0; r < i*j; r++)
+		ret[r] = v[r];
 	return ret;
 }
