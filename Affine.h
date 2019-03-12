@@ -18,6 +18,7 @@ public:
 
 	Affine(const int& _num_input, const int& _num_output, const int& activation = RELU);
 
+	void setInput(const Vector<double>& _input);
 	void feedForward();
 	void getMSE(const Vector<double>& y_t);
 	void setGrad(const Vector<double>& grad);

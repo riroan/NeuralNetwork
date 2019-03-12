@@ -6,7 +6,7 @@ Convolution1D::Convolution1D(const int& _stride, const int& _f_size, const int& 
 	:padding(_padding), stride(_stride), f_size(_f_size)
 {
 	random_device rd;
-	uniform_real_distribution distribution(0.0, 1.0);
+	uniform_real_distribution<double> distribution(0.0, 1.0);
 	filter.resize(f_size);
 	for (int i = 0; i < filter.size; i++)
 		filter[i] = distribution(rd);

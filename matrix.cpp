@@ -153,14 +153,21 @@ bool matrix::isValid(const int& i, const int& j)
 	return i >= 0 && i < row&&j >= 0 && j < col;
 }
 
-double matrix::Convolution(const matrix& m, const int& x, const int& y)
+double matrix::Convolution(const matrix& m, const int& x, const int& y, const double& a)
 {
 	double sum = 0.0;
 	for (int i = 0; i < m.row; i++)
 		for (int j = 0; j < m.col; j++)
 			if (isValid(x + i, y + j))
-				sum += getValue(x + i, y + j) * m.values[i*m.col + j];
+				sum += a * getValue(x + i, y + j) * m.getValue(i, j);
 	return sum;
+}
+
+void matrix::operator+=(const double& v)
+{
+	for (int i = 0; i < row; i++)
+		for (int j = 0; j < col; j++)
+			getValue(i, j) += v;
 }
 
 double dot(const Vector<double>& left, const Vector<double>& right)

@@ -25,7 +25,7 @@ public:
 	void assign_random_n(const double& s);
 	void print() const;
 	void productTo(const Vector<double>& v, Vector<double>& to);
-	double Convolution(const matrix& m, const int& i, const int& j);
+	double Convolution(const matrix& m, const int& i, const int& j, const double& a = 1.0);
 	bool isValid(const int& x, const int& y);
 	double& getValue(const int& i, const int& j) const;
 	Vector<double> getVector(const int& _size);
@@ -40,6 +40,7 @@ public:
 	double& operator[](const int& i) const;
 	matrix operator*(const matrix& right);
 	void operator=(const matrix& right);
+	void operator+=(const double& v);
 };
 
 void v_assign_random(Vector<double>& v, const double& min, const double& max);

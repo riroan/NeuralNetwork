@@ -97,6 +97,12 @@ void Affine::getGrad()
 	}
 }
 
+void Affine::setInput(const Vector<double>& _input)
+{
+	assert(num_input == _input.size);
+	input = _input;
+}
+
 void Affine::update_weight()
 {
 	matrix dg = V2M(out_grad, out_grad.size, 1);

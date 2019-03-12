@@ -1,4 +1,7 @@
 #include "Model.h"
+#include<thread>
+#include<future>
+using namespace std;
 
 Model::Model()
 	:layer_A(0), layer_C(0), num_of_layer(0), num_of_affine(0), num_of_convolution(0), Error(0.0)
@@ -34,10 +37,18 @@ void Model::addAffine(const int& _num_output, const int& activation)
 void Model::addConvolution(const int& f_w, const int& f_h, const int& activation, const int& stride, const int& padding, const char * pad_type)
 {
 	// Convolution layer must be in front of Affine layer.
+	assert(!num_of_affine && num_of_convolution);
+	num_of_layer++;
+	num_of_convolution++;
+	layer_C.push(new Convolution2D(layer_C[num_of_convolution - 2]->output.row, layer_C[num_of_convolution - 2]->output.col, stride, f_w, f_h, padding, activation, pad_type));
+}
+
+void Model::addConvolution(const int& _row, const int& _col, const int& f_w, const int& f_h, const int& activation, const int& stride, const int& padding, const char * pad_type)
+{
 	assert(!num_of_affine);
 	num_of_layer++;
 	num_of_convolution++;
-	layer_C.push(new Convolution2D(stride, f_w, f_h, padding, activation, pad_type));
+	layer_C.push(new Convolution2D(_row, _col, stride, f_w, f_h, padding, activation, pad_type));
 }
 
 void Model::setInput(const matrix& m)
@@ -64,11 +75,12 @@ void Model::forwardPropagation()
 		}
 		layer_A[0]->input = layer_C[num_of_convolution - 1]->output.M2V();
 	}
+
 	for (int i = 0; i < num_of_affine; i++)
 	{
-		layer_A[i]->feedForward();
-		if (i < num_of_affine - 1)
-			layer_A[i + 1]->input = layer_A[i]->output;
+			layer_A[i]->feedForward();
+			if (i < num_of_affine - 1)
+				layer_A[i + 1]->input = layer_A[i]->output;
 	}
 }
 

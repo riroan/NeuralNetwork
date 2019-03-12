@@ -15,6 +15,7 @@ public:
 	double learning_rate;
 	double bias;
 
+	Convolution2D(const int& _row, const int& _col, const int& _stride, const int& f_w, const int& f_h, const int& _padding, const int& _layer_act = RELU, const char * _pad_type = "none");
 	Convolution2D(const int& _stride, const int& f_w, const int& f_h, const int& _padding, const int& _layer_act = RELU, const char * _pad_type = "none");
 	void setInput(const matrix& _input);
 	void feedForward();

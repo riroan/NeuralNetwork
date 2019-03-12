@@ -18,6 +18,7 @@ public:
 	void addAffine(const int& _num_input, const int& _num_output, const int& activation);
 	void addAffine(const int& _num_output, const int& activation = RELU);
 	void addConvolution(const int& f_w, const int& f_h, const int& activation = RELU, const int& stride = 1, const int& padding = 0, const char * pad_type = "none");
+	void addConvolution(const int& _row, const int& _col, const int& f_w, const int& f_h, const int& activation = RELU, const int& stride = 1, const int& padding = 0, const char * pad_type = "none");
 
 	void setInput(const matrix& m);
 	void setInput(const Vector<double>& v);
