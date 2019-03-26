@@ -20,6 +20,8 @@ public:
 	void addConvolution(const int& f_w, const int& f_h, const int& activation = RELU, const int& stride = 1, const int& padding = 0, const char * pad_type = "none");
 	void addConvolution(const int& _row, const int& _col, const int& f_w, const int& f_h, const int& activation = RELU, const int& stride = 1, const int& padding = 0, const char * pad_type = "none");
 
+	void dropout(const double& rate = 0.5);
+
 	void setInput(const matrix& m);
 	void setInput(const Vector<double>& v);
 	void forwardPropagation();

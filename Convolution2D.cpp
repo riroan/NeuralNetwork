@@ -68,18 +68,21 @@ void Convolution2D::feedForward()
 void Convolution2D::backPropagation(const matrix& out_grad)
 {
 	//getGrad(out_grad);
+	
 	matrix temp(out_grad.row, out_grad.col);
 	for (int i = 0; i < out_grad.row*out_grad.col; i++)
 		temp[i] = output[i] - out_grad[i];
-	
+
 	update_weight(temp);
 }
 
 void Convolution2D::getGrad(matrix out_grad)
 {
 	matrix grad_r = out_grad.reverse();
-	for (int i = -1, x = 0; i < filter.row + 1 - grad_r.row + 1; i++, x++)
-		for (int j = -1, y = 0; j < filter.col + 1 - grad_r.col + 1; j++, y++)
+	int padding_row = (gradient.row - 1 - filter.row + out_grad.row) / 2;
+	int padding_col = (gradient.col - 1 - filter.col + out_grad.col) / 2;
+	for (int i = -padding_row, x = 0; i < filter.row + padding_row - grad_r.row + 1; i++, x++)
+		for (int j = -padding_col, y = 0; j < filter.col + padding_col - grad_r.col + 1; j++, y++)
 		{
 			gradient.getValue(x, y) = filter.Convolution(grad_r, i, j);
 			if (layer_act == RELU)
@@ -100,18 +103,18 @@ void Convolution2D::update_weight(matrix out_grad)
 		for (int j = 0; j < dw.col; j++)
 		{
 			dw.getValue(i, j) = input.Convolution(out_grad, i, j, learning_rate);
+			dw.getValue(i, j) /= static_cast<double>(d_size);
 		}
+
 	for (int i = 0; i < out_grad.row*out_grad.col; i++)
 		db += out_grad[i] * learning_rate;
-
-	for (int i = 0; i < dw.row*dw.col; i++)
-		dw[i] /= static_cast<double>(d_size);
 
 	db /= static_cast<double>(d_size);
 
 	for (int i = 0; i < filter.row; i++)
 		for (int j = 0; j < filter.col; j++)
 			filter.getValue(i, j) -= dw.getValue(i, j);
+
 	bias -= db;
 }
 

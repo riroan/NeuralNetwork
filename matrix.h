@@ -39,8 +39,13 @@ public:
 	Vector<double> operator*(const Vector<double>& right);
 	double& operator[](const int& i) const;
 	matrix operator*(const matrix& right);
+	matrix operator*(const double& v);
+	matrix operator-(const matrix& right);
 	void operator=(const matrix& right);
 	void operator+=(const double& v);
+	void operator/=(const double& v);
+	void operator-=(const matrix& right);
+	void operator+=(const matrix& right);
 };
 
 void v_assign_random(Vector<double>& v, const double& min, const double& max);

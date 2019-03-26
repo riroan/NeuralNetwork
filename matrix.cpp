@@ -21,7 +21,7 @@ void matrix::print() const
 	for (int i = 0; i < row; i++)
 	{
 		for (int j = 0; j < col; j++)
-			printf(" %.2lf", values[j + i * col]);
+			std::cout << " " << values[j+i*col];
 		printf("\n");
 	}
 }
@@ -170,6 +170,13 @@ void matrix::operator+=(const double& v)
 			getValue(i, j) += v;
 }
 
+void matrix::operator/=(const double& v)
+{
+	for (int i = 0; i < row; i++)
+		for (int j = 0; j < col; j++)
+			getValue(i, j) /= v;
+}
+
 double dot(const Vector<double>& left, const Vector<double>& right)
 {
 	assert(left.size == right.size);
@@ -222,5 +229,39 @@ matrix V2M(const Vector<double>& v, const int& i, const int& j)
 	matrix ret(i, j);
 	for (int r = 0; r < i*j; r++)
 		ret[r] = v[r];
+	return ret;
+}
+
+void matrix::operator-=(const matrix& right)
+{
+	assert(row == right.row);
+	assert(col == right.col);
+	for (int i = 0; i < row*col; i++)
+		values[i] -= right[i];
+}
+
+void matrix::operator+=(const matrix& right)
+{
+	assert(row == right.row);
+	assert(col == right.col);
+	for (int i = 0; i < row*col; i++)
+		values[i] += right[i];
+}
+
+matrix matrix::operator*(const double& v)
+{
+	matrix ret(row, col);
+	for (int i = 0; i < row*col; i++)
+		ret[i] = values[i] * v;
+	return ret;
+}
+
+matrix matrix::operator-(const matrix& right)
+{
+	assert(row == right.row);
+	assert(col == right.col);
+	matrix ret(row, col);
+	for (int i = 0; i < row*col; i++)
+		ret[i] = values[i] - right[i];
 	return ret;
 }

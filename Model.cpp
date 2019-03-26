@@ -31,7 +31,7 @@ void Model::addAffine(const int& _num_output, const int& activation)
 	if (num_of_convolution&&num_of_affine == 1)
 		layer_A.push(new Affine(layer_C[num_of_convolution - 1]->output.row*layer_C[num_of_convolution - 1]->output.col, _num_output, activation));
 	else
-		layer_A.push(new Affine(layer_A[num_of_layer - 2]->num_output, _num_output, activation));
+		layer_A.push(new Affine(layer_A[num_of_affine - 2]->num_output, _num_output, activation));
 }
 
 void Model::addConvolution(const int& f_w, const int& f_h, const int& activation, const int& stride, const int& padding, const char * pad_type)
@@ -104,7 +104,7 @@ void Model::backPropagation(const Vector<double>& y)
 	}
 
 	for (int i = num_of_affine - 1; i >= 0; i--)
-		layer_A[i]->update_weight();
+		layer_A[i]->update_weight_momentum();
 	if (num_of_convolution)
 	{
 		layer_C[num_of_convolution - 1]->update_weight(V2M(layer_A[0]->gradient, layer_C[num_of_convolution - 1]->output.row, layer_C[num_of_convolution - 1]->output.col));
@@ -113,11 +113,21 @@ void Model::backPropagation(const Vector<double>& y)
 	}
 
 	Error = 0;
-	for (int i = 0; i < y.size; i++)
-		Error += pow((layer_A[num_of_affine - 1]->output[i] - y[i]), 2.0);
+	if (layer_A[num_of_affine - 1]->layer_act == SIGMOID)
+		for (int i = 0; i < y.size; i++)
+			Error -= log(layer_A[num_of_affine - 1]->output[i] + 1e-8) * y[i] + log(1 - layer_A[num_of_affine - 1]->output[i] + 1e-8)*(1 - y[i]);
+	else
+		for (int i = 0; i < y.size; i++)
+			Error += (layer_A[num_of_affine - 1]->output[i] - y[i])*(layer_A[num_of_affine - 1]->output[i] - y[i]);
 }
 
 Vector<double> Model::getOutput()
 {
 	return layer_A[num_of_affine - 1]->output;
+}
+
+void Model::dropout(const double& rate)
+{
+	for (int i = 0; i < num_of_affine - 1; i++)
+		layer_A[i]->apply_dropOut(rate);
 }

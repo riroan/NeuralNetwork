@@ -15,6 +15,10 @@ public:
 	Vector<double> gradient;	// gradient of x not w
 	Vector<double> out_grad;	// gradient of next layer
 	double		   learning_rate;
+	double		   dropout_rate;
+	Vector<double> dropout;
+	matrix r;					// for AdaGrad
+	matrix v;					// for momentum
 
 	Affine(const int& _num_input, const int& _num_output, const int& activation = RELU);
 
@@ -24,6 +28,10 @@ public:
 	void setGrad(const Vector<double>& grad);
 	void getGrad();
 	void update_weight();
+	void update_weight_AdaGrad();	// don't use
+	void update_weight_momentum();
+
+	void apply_dropOut(const double& rate);
 
 	void apply_sigmoid(Vector<double>& v);
 	void apply_ReLU(Vector<double>& v);

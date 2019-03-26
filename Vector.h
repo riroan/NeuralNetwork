@@ -64,7 +64,7 @@ public:
 	void print()
 	{
 		for (int i = 0; i < size; i++)
-			printf(" %lf", values[i]);
+			std::cout << " " << values[i];
 		printf("\n");
 	}
 
@@ -89,6 +89,28 @@ public:
 		for (int i = 0; i < size; i++)
 			ret[i] = values[i] + v[i];
 		return ret;
+	}
+
+	Vector<T> operator*(const Vector<T>& v)
+	{
+		assert(size == v.size);
+		Vector<T> ret(size);
+		for (int i = 0; i < size; i++)
+			ret[i] = values[i] * v[i];
+		return ret;
+	}
+
+	void operator*=(const Vector<T>& v)
+	{
+		assert(size == v.size);
+		for (int i = 0; i < size; i++)
+			values[i] *= v[i];
+	}
+
+	void operator/=(const T& s)
+	{
+		for (int i = 0; i < size; i++)
+			values[i] /= s;
 	}
 
 	void assign_random(const double& min, const double& max)
@@ -116,5 +138,13 @@ public:
 	void pop()
 	{
 		resize(--size);
+	}
+
+	T get_mean()
+	{
+		T result = (T)0.0;
+		for (int i = 0; i < size; i++)
+			result += values[i];
+		return result / size;
 	}
 };
