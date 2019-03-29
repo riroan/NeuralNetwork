@@ -48,8 +48,4 @@ public:
 	void operator+=(const matrix& right);
 };
 
-void v_assign_random(Vector<double>& v, const double& min, const double& max);
-void v_assign_random_n(Vector<double>& v, const double& s);
-double dot(const Vector<double>& left, const Vector<double>& right);
-Vector<double> vsum(const Vector<double>& left, const Vector<double>& right);
 matrix V2M(const Vector<double>& v, const int& i, const int& j);

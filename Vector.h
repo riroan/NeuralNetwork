@@ -1,6 +1,7 @@
 #pragma once
 #include<iostream>
 #include<cassert>
+#include<random>
 
 template<class T>
 class Vector
@@ -68,7 +69,7 @@ public:
 		printf("\n");
 	}
 
-		
+
 	T& operator[](const int& i) const
 	{
 		return values[i];
@@ -115,8 +116,31 @@ public:
 
 	void assign_random(const double& min, const double& max)
 	{
+		std::uniform_real_distribution<double> distribution(min, max);
+		std::random_device rd;
+
 		for (int i = 0; i < size; i++)
+			//values[i] = distribution(rd);
 			values[i] = (max - min) * ((double)rand() / RAND_MAX) + min;
+	}
+
+	void assign_random_n(const double& s)
+	{
+		std::normal_distribution<double> distribution(0.0, 1.0);
+		//std::uniform_real_distribution distribution(-1.0, 1.0);
+		std::random_device rd;
+
+		for (int i = 0; i < size; i++)
+			values[i] = distribution(rd) / s;
+	}
+
+	double dot(const Vector<double>& right)
+	{
+		assert(size == right.size);
+		double ret = 0.0;
+		for (int i = 0; i < size; i++)
+			ret += values[i] * right[i];
+		return ret;
 	}
 
 	double getMax()

@@ -21,7 +21,7 @@ void matrix::print() const
 	for (int i = 0; i < row; i++)
 	{
 		for (int j = 0; j < col; j++)
-			std::cout << " " << values[j+i*col];
+			std::cout << " " << values[j + i * col];
 		printf("\n");
 	}
 }
@@ -42,12 +42,15 @@ void matrix::resize(const int& _row, const int& _col)
 
 void matrix::assign_random(const double& min, const double& max)
 {
-	v_assign_random(values, min, max);
+	static int count = 0;
+	count++;
+	values.assign_random(min, max);
+	printf("%d\n", count);
 }
 
 void matrix::assign_random_n(const double& s)
 {
-	v_assign_random_n(values, s);
+	values.assign_random_n(s);
 }
 
 Vector<double> matrix::getVector(const int& _size)
@@ -175,44 +178,6 @@ void matrix::operator/=(const double& v)
 	for (int i = 0; i < row; i++)
 		for (int j = 0; j < col; j++)
 			getValue(i, j) /= v;
-}
-
-double dot(const Vector<double>& left, const Vector<double>& right)
-{
-	assert(left.size == right.size);
-	double ret = 0.0;
-
-	for (int i = 0; i < left.size; i++)
-		ret += left.values[i] * right.values[i];
-	return ret;
-}
-
-Vector<double> vsum(const Vector<double>& left, const Vector<double>& right)
-{
-	assert(left.size == right.size);
-	Vector<double> ret(left.size);
-
-	for (int i = 0; i < left.size; i++)
-		ret[i] = left.values[i] + right.values[i];
-	return ret;
-}
-
-void v_assign_random(Vector<double>& v, const double& min, const double& max)
-{
-	std::uniform_real_distribution<double> distribution(min, max);
-
-	for (int i = 0; i < v.size; i++)
-		//v[i] = distribution(rd);
-		v[i] = (max - min) * ((double)rand() / RAND_MAX) + min;
-}
-
-void v_assign_random_n(Vector<double>& v, const double& s)
-{
-	std::normal_distribution<double> distribution(0.0, 1.0);
-	//std::uniform_real_distribution distribution(-1.0, 1.0);
-
-	for (int i = 0; i < v.size; i++)
-		v[i] = distribution(rd) / s;
 }
 
 matrix matrix::reverse()

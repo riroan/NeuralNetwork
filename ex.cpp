@@ -209,20 +209,20 @@
 //
 //int main()
 //{
-//	cout << "==========SGD==========" << endl;
-//	gradient_descent_SGD(f1, 5.0, 5.0);
+//	//cout << "==========SGD==========" << endl;
+//	//gradient_descent_SGD(f1, 5.0, 5.0);
 //
-//	cout << endl << "==========momentum==========" << endl;
-//	gradient_descent_momentum(f1, 5.0, 5.0);
+//	//cout << endl << "==========momentum==========" << endl;
+//	//gradient_descent_momentum(f1, 5.0, 5.0);
 //
-//	cout << endl << "==========AdaGrad==========" << endl;
-//	gradient_descent_AdaGrad(f1, 5.0, 5.0);
+//	//cout << endl << "==========AdaGrad==========" << endl;
+//	//gradient_descent_AdaGrad(f1, 5.0, 5.0);
 //
-//	cout << endl << "==========Adam==========" << endl;
-//	gradient_descent_Adam(f1, 5.0, 5.0);
+//	//cout << endl << "==========Adam==========" << endl;
+//	//gradient_descent_Adam(f1, 5.0, 5.0);
 //
-//	cout << endl << "==========RMS==========" << endl;
-//	gradient_descent_RMS(f1, 5.0, 5.0);
+//	//cout << endl << "==========RMS==========" << endl;
+//	//gradient_descent_RMS(f1, 5.0, 5.0);
 //
 //	//f(5000000);
 //
@@ -324,6 +324,29 @@
 //	//	cout << endl;
 //	//}
 //	//f(1000000);
+//
+//	matrix m(1000, 1000);
+//	Vector<Vector<double>> v(1000);
+//	for (int i = 0; i < 1000; i++)
+//		v[i] = Vector<double>(1000);
+//
+//	auto start = std::chrono::steady_clock::now();
+//
+//	for (int i = 0; i < 1000; i++)
+//		for (int j = 0; j < 1000; j++)
+//			v[i][j] = i + j;
+//
+//	std::chrono::duration<double> dur = std::chrono::steady_clock::now() - start;
+//	cout << dur.count() << endl;
+//
+//	start = std::chrono::steady_clock::now();
+//
+//	for (int i = 0; i < 1000; i++)
+//		for (int j = 0; j < 1000; j++)
+//			m[i * 1000 + j] = i + j;
+//
+//	dur = std::chrono::steady_clock::now() - start;
+//	cout << dur.count() << endl;
 //}
 //
 //random_device generator;

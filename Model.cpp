@@ -78,9 +78,9 @@ void Model::forwardPropagation()
 
 	for (int i = 0; i < num_of_affine; i++)
 	{
-			layer_A[i]->feedForward();
-			if (i < num_of_affine - 1)
-				layer_A[i + 1]->input = layer_A[i]->output;
+		layer_A[i]->feedForward();
+		if (i < num_of_affine - 1)
+			layer_A[i + 1]->input = layer_A[i]->output;
 	}
 }
 

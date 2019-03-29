@@ -68,7 +68,7 @@ void Convolution2D::feedForward()
 void Convolution2D::backPropagation(const matrix& out_grad)
 {
 	//getGrad(out_grad);
-	
+
 	matrix temp(out_grad.row, out_grad.col);
 	for (int i = 0; i < out_grad.row*out_grad.col; i++)
 		temp[i] = output[i] - out_grad[i];

@@ -156,7 +156,7 @@ void Affine::update_weight_AdaGrad()
 	matrix dg = V2M(out_grad, out_grad.size, 1);
 	matrix x = V2M(input, 1, input.size);
 	matrix dw = dg * x;
-	
+
 	for (int i = 0; i < r.row*r.col; i++)
 	{
 		r[i] += dw[i] * dw[i];

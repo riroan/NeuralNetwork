@@ -59,7 +59,7 @@ void Network::init_network(const int& _num_input, const int& _num_output, const 
 	for (int i = 0; i < num_layer - 1; i++)	// except output layer
 		num_neurons[i] = num_input + 1;
 	num_neurons[num_layer - 1] = num_output + 1;
-	
+
 	bias = 1;
 	alpha = 0.15;
 
@@ -117,7 +117,7 @@ void Network::feedForward()
 	for (int i = 0; i < w.size; i++)
 	{
 		neurons[i + 1] = w[i] * neurons[i];
-		
+
 		if (output_softmax&& i == w.size - 1)
 		{
 			apply_softmax(neurons[i + 1]);
@@ -159,7 +159,7 @@ void Network::update_weight_SGD()
 	for (int r = w_size - 1; r >= 0; r--)
 		for (int i = 0; i < w[r].row; i++)
 			for (int j = 0; j < w[r].col; j++)
-			{	
+			{
 				const double delta = alpha * layer_grad[r + 1][i] * neurons[r][j];
 				w[r].getValue(i, j) -= delta;
 			}
@@ -203,9 +203,9 @@ void Network::getGradient_MSE(const Vector<double>& v)
 	{
 		double last_value = neurons[last][i];
 		// MSE
-		if(activation_type[last] == activation::sigmoid)
+		if (activation_type[last] == activation::sigmoid)
 			layer_grad[last][i] = (last_value - v[i])*grad_sigmoid(last_value);
-		else if(activation_type[last] == activation::relu)
+		else if (activation_type[last] == activation::relu)
 			layer_grad[last][i] = (last_value - v[i])*grad_ReLU(last_value);
 		else
 			layer_grad[last][i] = (last_value - v[i])*grad_LReLU(last_value);
