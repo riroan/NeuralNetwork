@@ -101,6 +101,13 @@ public:
 		return ret;
 	}
 
+	void operator-=(const Vector<T>& v)
+	{
+		assert(size == v.size);
+		for (int i = 0; i < size; i++)
+			values[i] -= v[i];
+	}
+
 	void operator*=(const Vector<T>& v)
 	{
 		assert(size == v.size);
@@ -170,5 +177,17 @@ public:
 		for (int i = 0; i < size; i++)
 			result += values[i];
 		return result / size;
+	}
+
+	Vector<T> slice(const int& start, int end = -1)	// [start, end)
+	{
+		if (end < 0) end = size;
+		assert(start < end);
+		assert(start >= 0);
+		assert(end <= size);
+		Vector<T> ret(end - start);
+		for (int i = start; i < end; i++)
+			ret[i - start] = values[i];
+		return ret;
 	}
 };

@@ -19,6 +19,7 @@ public:
 	Vector<double> dropout;
 	matrix r;					// for AdaGrad
 	matrix v;					// for momentum
+	matrix rms;					// for RMSProp
 
 	Affine(const int& _num_input, const int& _num_output, const int& activation = RELU);
 
@@ -30,6 +31,7 @@ public:
 	void update_weight();
 	void update_weight_AdaGrad();	// don't use
 	void update_weight_momentum();
+	void update_weight_RMSProp();
 
 	void apply_dropOut(const double& rate);
 

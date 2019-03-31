@@ -1,5 +1,6 @@
 #include"matrix.h"
 #include<iostream>
+#include<future>
 
 std::random_device rd;
 
@@ -42,23 +43,12 @@ void matrix::resize(const int& _row, const int& _col)
 
 void matrix::assign_random(const double& min, const double& max)
 {
-	static int count = 0;
-	count++;
 	values.assign_random(min, max);
-	printf("%d\n", count);
 }
 
 void matrix::assign_random_n(const double& s)
 {
 	values.assign_random_n(s);
-}
-
-Vector<double> matrix::getVector(const int& _size)
-{
-	Vector<double> ret(_size);
-	for (int i = 0; i < _size; i++)
-		ret[i] = 0.0;
-	return ret;
 }
 
 void matrix::productTo(const Vector<double>& v, Vector<double>& to)
@@ -71,14 +61,36 @@ void matrix::productTo(const Vector<double>& v, Vector<double>& to)
 	}
 }
 
+matrix matrix::elementProduct(const matrix& right)
+{
+	assert(row == right.row);
+	assert(col == right.col);
+	matrix ret(row, col);
+	for (int i = 0; i < row; i++)
+		for (int j = 0; j < col; j++)
+			ret.getValue(i, j) = getValue(i, j) * right.getValue(i, j);
+	return ret;
+}
+
 Vector<double> matrix::operator*(const Vector<double>& right)
 {
 	assert(col == right.size);
-	Vector<double> ret = getVector(row);
+	Vector<double> ret(row);
 	for (int i = 0; i < row; i++)
 		for (int j = 0; j < col; j++)
 			ret[i] += getValue(i, j)*right.values[j];
 
+	return ret;
+}
+
+matrix matrix::operator+(const matrix& right)
+{
+	assert(row == right.row);
+	assert(col == right.col);
+	matrix ret(row, col);
+	for (int i = 0; i < row; i++)
+		for (int j = 0; j < col; j++)
+			ret.getValue(i, j) = getValue(i, j) + right.getValue(i, j);
 	return ret;
 }
 
@@ -135,9 +147,9 @@ matrix matrix::Transpose()
 
 Vector<double> matrix::M2V()
 {
-	Vector<double> ret(row * col);
-	for (int i = 0; i < row*col; i++)
-		ret[i] = values[i];
+	Vector<double> ret;
+	ret = values;
+	ret.size = row * col;
 	return ret;
 }
 
@@ -192,8 +204,7 @@ matrix V2M(const Vector<double>& v, const int& i, const int& j)
 {
 	//assert(v.size == i * j);
 	matrix ret(i, j);
-	for (int r = 0; r < i*j; r++)
-		ret[r] = v[r];
+	ret.values = v;
 	return ret;
 }
 

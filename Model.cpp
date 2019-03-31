@@ -87,6 +87,7 @@ void Model::forwardPropagation()
 void Model::backPropagation(const Vector<double>& y)
 {
 	assert(layer_A[num_of_affine - 1]->num_output == y.size);
+
 	layer_A[num_of_affine - 1]->getMSE(y);
 	layer_A[num_of_affine - 1]->getGrad();
 
@@ -104,7 +105,7 @@ void Model::backPropagation(const Vector<double>& y)
 	}
 
 	for (int i = num_of_affine - 1; i >= 0; i--)
-		layer_A[i]->update_weight_momentum();
+		layer_A[i]->update_weight_RMSProp();
 	if (num_of_convolution)
 	{
 		layer_C[num_of_convolution - 1]->update_weight(V2M(layer_A[0]->gradient, layer_C[num_of_convolution - 1]->output.row, layer_C[num_of_convolution - 1]->output.col));

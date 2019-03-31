@@ -1,8 +1,12 @@
 #include"Affine.h"
+#include<chrono>
+#include<thread>
+#include<future>
+using namespace std;
 #define LAMBDA 0.7
 
 Affine::Affine(const int& _num_input, const int& _num_output, const int& activation)
-	:learning_rate(0.1)
+	:learning_rate(0.01)
 {
 	layer_act = activation;
 	num_input = _num_input; num_output = _num_output;
@@ -19,6 +23,8 @@ Affine::Affine(const int& _num_input, const int& _num_output, const int& activat
 
 	r.init_matrix(num_output, num_input);
 	r.assign_random(0.0, 0.0);
+	rms.init_matrix(num_output, num_input);
+	rms.assign_random(0.0, 0.0);
 	v.init_matrix(num_output, num_input);
 	v.assign_random(0.0, 0.0);
 
@@ -135,20 +141,11 @@ void Affine::update_weight()
 	for (int i = 0; i < dw.row*dw.col; i++)
 		w[i] -= learning_rate * dw[i];
 
+	//double db = out_grad.get_mean();
 	//for (int i = 0; i < b.size; i++)
-	//	b[i] -= learning_rate * dg[i];
-
-	double db = out_grad.get_mean();
+	//	b[i] -= learning_rate * db;
 	for (int i = 0; i < b.size; i++)
-		b[i] -= learning_rate * db;
-
-	//std::cout << "w" << std::endl;
-	//w.print();
-	//std::cout << "dw" << std::endl;
-	//dw.print();
-	//std::cout << "dg" << std::endl;
-	//out_grad.print();
-	//std::cout << std::endl;
+		b[i] -= dg[i] * learning_rate;
 }
 
 void Affine::update_weight_AdaGrad()
@@ -164,7 +161,7 @@ void Affine::update_weight_AdaGrad()
 		w += dw[i];
 	}
 	for (int i = 0; i < b.size; i++)
-		b[i] -= learning_rate * dg[i];
+		b[i] -= dg[i] * learning_rate;
 }
 
 void Affine::update_weight_momentum()
@@ -172,12 +169,50 @@ void Affine::update_weight_momentum()
 	matrix dg = V2M(out_grad, out_grad.size, 1);
 	matrix x = V2M(input, 1, input.size);
 	matrix dw = dg * x;
+
 	v = v * 0.5 - dw * learning_rate;
 
 	w += v;
 
 	for (int i = 0; i < b.size; i++)
-		b[i] -= learning_rate * dg[i];
+		b[i] -= dg[i] * learning_rate;
+}
+
+void Affine::update_weight_RMSProp()
+{
+	matrix dg = V2M(out_grad, out_grad.size, 1);
+	matrix x = V2M(input, 1, input.size);
+	matrix dw = dg * x;
+	learning_rate = 0.001;
+	const double rho = 0.9;
+
+	rms = rms * rho + dw.elementProduct(dw) * (1 - rho);
+
+	auto f = [&](const int& i) {
+		for (int j = 0; j < dw.col; j++)
+			dw.getValue(i, j) = learning_rate / sqrt(1e-6 + rms.getValue(i, j))*dw.getValue(i, j); 
+	};
+
+	// naive thread : 0.001
+
+	//Vector<thread> v_thread(dw.row);
+	//for (int i = 0; i < dw.row; i++)
+	//	v_thread[i] = thread(f, i);
+
+	//for (int i = 0; i < dw.row; i++)
+	//	v_thread[i].join();
+
+	// no thread : 0.0003
+
+	for (int i = 0; i < dw.row; i++)
+		for (int j = 0; j < dw.col; j++)
+			dw.getValue(i, j) = learning_rate / sqrt(1e-6 + rms.getValue(i, j))*dw.getValue(i, j);
+
+
+	w -= dw;
+
+	for (int i = 0; i < b.size; i++)
+		b[i] -= dg[i] * learning_rate;
 }
 
 void Affine::apply_dropOut(const double& rate)

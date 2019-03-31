@@ -28,16 +28,17 @@ public:
 	double Convolution(const matrix& m, const int& i, const int& j, const double& a = 1.0);
 	bool isValid(const int& x, const int& y);
 	double& getValue(const int& i, const int& j) const;
-	Vector<double> getVector(const int& _size);
-	Vector<double> M2V();					// matrix to vector
+	Vector<double> M2V();								// matrix to vector
 	matrix productTranspose(const matrix& right);
 	matrix Transpose();
 	matrix applyPadding(const int& p);
 	matrix reverse();
+	matrix elementProduct(const matrix& right);
 
 	// operator overloading
 	Vector<double> operator*(const Vector<double>& right);
 	double& operator[](const int& i) const;
+	matrix operator+(const matrix& right);
 	matrix operator*(const matrix& right);
 	matrix operator*(const double& v);
 	matrix operator-(const matrix& right);
