@@ -40,7 +40,7 @@ void Model::addConvolution(const int& f_w, const int& f_h, const int& activation
 	assert(!num_of_affine && num_of_convolution);
 	num_of_layer++;
 	num_of_convolution++;
-	layer_C.push(new Convolution2D(layer_C[num_of_convolution - 2]->output.row, layer_C[num_of_convolution - 2]->output.col, stride, f_w, f_h, padding, activation, pad_type));
+	layer_C.push(new Convolution2D(layer_C[num_of_convolution - 2]->output.row, layer_C[num_of_convolution - 2]->output.col, f_w, f_h, activation, stride, pad_type));
 }
 
 void Model::addConvolution(const int& _row, const int& _col, const int& f_w, const int& f_h, const int& activation, const int& stride, const int& padding, const char * pad_type)
@@ -48,7 +48,7 @@ void Model::addConvolution(const int& _row, const int& _col, const int& f_w, con
 	assert(!num_of_affine);
 	num_of_layer++;
 	num_of_convolution++;
-	layer_C.push(new Convolution2D(_row, _col, stride, f_w, f_h, padding, activation, pad_type));
+	layer_C.push(new Convolution2D(_row, _col, f_w, f_h, activation, stride, pad_type));
 }
 
 void Model::setInput(const matrix& m)

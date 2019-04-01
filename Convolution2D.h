@@ -8,15 +8,14 @@ public:
 	matrix filter;
 	matrix output;
 	matrix gradient;
-	bool   pad_type;
 	int	   padding;
 	int    stride;
 	int	   layer_act;
 	double learning_rate;
 	double bias;
 
-	Convolution2D(const int& _row, const int& _col, const int& _stride, const int& f_w, const int& f_h, const int& _padding, const int& _layer_act = RELU, const char * _pad_type = "none");
-	Convolution2D(const int& _stride, const int& f_w, const int& f_h, const int& _padding, const int& _layer_act = RELU, const char * _pad_type = "none");
+	Convolution2D(const int& _row, const int& _col, const int& f_w, const int& f_h, const int& _layer_act = RELU, const int& _stride = 1, const char * _pad_type = "valid");
+	Convolution2D(const int& f_w, const int& f_h, const int& _layer_act = RELU, const int& _stride = 1, const char * _pad_type = "valid");
 	void setInput(const matrix& _input);
 	void feedForward();
 
