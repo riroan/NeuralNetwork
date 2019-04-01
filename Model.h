@@ -1,12 +1,12 @@
 #pragma once
 #include"Affine.h"
-#include"Convolution2D.h"
+#include"Convolution3D.h"
 
 class Model
 {
 public:
 	Vector<Affine *>		  layer_A;
-	Vector<Convolution2D *>   layer_C;
+	Vector<Convolution3D *>   layer_C;
 	int						  num_of_layer;
 	int 					  num_of_affine;
 	int						  num_of_convolution;
@@ -17,8 +17,8 @@ public:
 
 	void addAffine(const int& _num_input, const int& _num_output, const int& activation);
 	void addAffine(const int& _num_output, const int& activation = RELU);
-	void addConvolution(const int& f_w, const int& f_h, const int& activation = RELU, const int& stride = 1, const int& padding = 0, const char * pad_type = "none");
-	void addConvolution(const int& _row, const int& _col, const int& f_w, const int& f_h, const int& activation = RELU, const int& stride = 1, const int& padding = 0, const char * pad_type = "none");
+	void addConvolution(const int& f_w, const int& f_h, const int& output_channel = 1, const char * pad_type = "valid", const int& activation = RELU, const int& stride = 1, const int& padding = 0);
+	void addConvolution(const int& _row, const int& _col, const int& f_w, const int& f_h, const int& input_channel = 1, const int& output_channel = 1, const int& activation = RELU, const int& stride = 1, const int& padding = 0, const char * pad_type = "none");
 
 	void dropout(const double& rate = 0.5);
 

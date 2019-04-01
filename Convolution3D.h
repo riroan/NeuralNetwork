@@ -6,6 +6,7 @@ class Convolution3D
 public:
 	Vector<Vector<Convolution2D>> kernel;
 	Vector<matrix>				  output;
+	Vector<matrix>				  dx;
 	unsigned					  input_channel;
 	unsigned					  output_channel;
 	unsigned					  input_cnt;
@@ -16,6 +17,8 @@ public:
 	matrix getOutput(const int& i);
 	void setInput(const matrix& input);
 	void feedForward();
-	void backPropagation();
+	void getGrad(const Vector<matrix>& out_grad);
+	void updateWeight(const Vector<matrix>& out_grad);
 	
+	Vector<double> flatten();
 };

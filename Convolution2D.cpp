@@ -13,7 +13,6 @@ Convolution2D::Convolution2D(const int& _row, const int& _col, const int& f_w, c
 		padding = 0;
 
 	bias = (double)rand() / RAND_MAX;
-
 	int out_row = (input.row + 2 * padding - filter.row) / stride + 1;
 	int out_col = (input.col + 2 * padding - filter.col) / stride + 1;
 	output.resize(out_row, out_col);
