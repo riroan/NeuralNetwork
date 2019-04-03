@@ -1,6 +1,5 @@
 #pragma once
 #include "Vector.h"
-#include <random>
 #define RELU 1
 #define LRELU 2
 #define SIGMOID 3
@@ -47,6 +46,9 @@ public:
 	void operator/=(const double& v);
 	void operator-=(const matrix& right);
 	void operator+=(const matrix& right);
+
+	friend std::ostream &operator<<(std::ostream &os, const matrix& v);
 };
 
 matrix V2M(const Vector<double>& v, const int& i, const int& j);
+Vector<matrix> V2VM(const Vector<double>& v, const int& len, const int& row, const int& col);

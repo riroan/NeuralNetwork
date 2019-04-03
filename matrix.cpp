@@ -1,6 +1,4 @@
 #include"matrix.h"
-#include<iostream>
-#include<future>
 
 std::random_device rd;
 
@@ -75,10 +73,10 @@ matrix matrix::elementProduct(const matrix& right)
 Vector<double> matrix::operator*(const Vector<double>& right)
 {
 	assert(col == right.size);
-	Vector<double> ret(row);
+	Vector<double> ret(row, 0.0);
 	for (int i = 0; i < row; i++)
 		for (int j = 0; j < col; j++)
-			ret[i] += getValue(i, j)*right.values[j];
+			ret[i] += getValue(i, j)*right[j];
 
 	return ret;
 }
@@ -105,9 +103,13 @@ matrix matrix::operator*(const matrix& right)
 	matrix ret(row, right.col);
 	ret.assign_random(0.0, 0.0);
 
+	int j, k;
+
+#pragma omp parallel for private(j,k)
+
 	for (int i = 0; i < ret.row; i++)
-		for (int j = 0; j < ret.col; j++)
-			for (int k = 0; k < col; k++)
+		for (j = 0; j < ret.col; j++)
+			for (k = 0; k < col; k++)
 				ret.getValue(i, j) += getValue(i, k)*right.getValue(k, j);
 
 	return ret;
@@ -240,4 +242,34 @@ matrix matrix::operator-(const matrix& right)
 	for (int i = 0; i < row*col; i++)
 		ret[i] = values[i] - right[i];
 	return ret;
+}
+
+Vector<matrix> V2VM(const Vector<double>& v, const int& len, const int& row, const int& col)
+{
+	assert(v.size == len * row * col);
+	Vector<matrix> ret(len);
+	int cnt = 0;
+	for (int i = 0; i < len; i++)
+	{
+		ret[i] = matrix(row, col);
+		for (int j = 0; j < row*col; j++)
+			ret[i][j] = v[cnt++];
+	}
+	return ret;
+}
+
+std::ostream &operator<<(std::ostream &os, const matrix& v)
+{
+	os << "[";
+	for (int i = 0; i < v.row; i++)
+	{
+		os << "[";
+		for (int j = 0; j < v.col; j++)
+			os << " " << v.getValue(i, j);
+		if (i < v.row - 1)
+			os << "],\n";
+	}
+	os << "]";
+	os << "]\n";
+	return os;
 }

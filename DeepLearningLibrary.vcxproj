@@ -136,6 +136,8 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
+      <LanguageStandard>stdcpp17</LanguageStandard>
+      <OpenMPSupport>true</OpenMPSupport>
     </ClCompile>
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
@@ -148,6 +150,7 @@
     <ClInclude Include="Affine.h" />
     <ClInclude Include="Convolution1D.h" />
     <ClInclude Include="Convolution2D.h" />
+    <ClInclude Include="Convolution3D.h" />
     <ClInclude Include="matrix.h" />
     <ClInclude Include="Model.h" />
     <ClInclude Include="Network.h" />
@@ -157,11 +160,19 @@
     <ClCompile Include="Affine.cpp" />
     <ClCompile Include="Convolution1D.cpp" />
     <ClCompile Include="Convolution2D.cpp" />
+    <ClCompile Include="Convolution3D.cpp" />
+    <ClCompile Include="error_test.cpp" />
     <ClCompile Include="ex.cpp" />
+    <ClCompile Include="future_test.cpp" />
+    <ClCompile Include="imdb_example.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="matrix.cpp" />
+    <ClCompile Include="mnist_Convolution.cpp" />
+    <ClCompile Include="mnist_example.cpp" />
     <ClCompile Include="Model.cpp" />
     <ClCompile Include="Network.cpp" />
+    <ClCompile Include="test.cpp" />
+    <ClCompile Include="Vector.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

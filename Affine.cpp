@@ -1,8 +1,4 @@
 #include"Affine.h"
-#include<chrono>
-#include<thread>
-#include<future>
-using namespace std;
 #define LAMBDA 0.7
 
 Affine::Affine(const int& _num_input, const int& _num_output, const int& activation)
@@ -17,7 +13,8 @@ Affine::Affine(const int& _num_input, const int& _num_output, const int& activat
 	w.init_matrix(num_output, num_input);
 
 	if (activation == RELU || activation == LRELU)
-		w.assign_random_n(sqrt(num_input / 2.0));
+		//w.assign_random_n(sqrt(num_input / 2.0));
+		w.assign_random(0.0, 0.1);
 	else
 		w.assign_random(0.0, 0.1);
 
@@ -114,8 +111,8 @@ void Affine::getGrad()
 		out_grad /= dropout_rate;
 	}
 
+	std::cout << w.Transpose() << std::endl << out_grad;
 	gradient = w.Transpose()*out_grad;
-
 	for (int i = 0; i < gradient.size; i++)
 	{
 		if (layer_act == RELU)
@@ -125,6 +122,7 @@ void Affine::getGrad()
 		else if (layer_act == SIGMOID)
 			gradient[i] *= grad_sigmoid(input[i]);
 	}
+	std::cout << gradient;
 }
 
 void Affine::setInput(const Vector<double>& _input)
@@ -188,10 +186,10 @@ void Affine::update_weight_RMSProp()
 
 	rms = rms * rho + dw.elementProduct(dw) * (1 - rho);
 
-	auto f = [&](const int& i) {
-		for (int j = 0; j < dw.col; j++)
-			dw.getValue(i, j) = learning_rate / sqrt(1e-6 + rms.getValue(i, j))*dw.getValue(i, j); 
-	};
+	//auto f = [&](const int& i) {
+	//	for (int j = 0; j < dw.col; j++)
+	//		dw.getValue(i, j) = learning_rate / sqrt(1e-6 + rms.getValue(i, j))*dw.getValue(i, j); 
+	//};
 
 	// naive thread : 0.001
 
@@ -207,7 +205,7 @@ void Affine::update_weight_RMSProp()
 	for (int i = 0; i < dw.row; i++)
 		for (int j = 0; j < dw.col; j++)
 			dw.getValue(i, j) = learning_rate / sqrt(1e-6 + rms.getValue(i, j))*dw.getValue(i, j);
-
+	
 
 	w -= dw;
 

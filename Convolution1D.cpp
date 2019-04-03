@@ -1,5 +1,4 @@
 #include"Convolution1D.h"
-#include<iostream>
 using namespace std;
 
 Convolution1D::Convolution1D(const int& _stride, const int& _f_size, const int& _padding, const char * _pad_type)

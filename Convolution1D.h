@@ -1,8 +1,5 @@
 #pragma once
 #include"Vector.h"
-#include<random>
-#include<cstring>
-using namespace std;
 
 class Convolution1D
 {

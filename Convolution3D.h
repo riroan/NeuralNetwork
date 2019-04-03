@@ -18,7 +18,7 @@ public:
 	void setInput(const matrix& input);
 	void feedForward();
 	void getGrad(const Vector<matrix>& out_grad);
-	void updateWeight(const Vector<matrix>& out_grad);
+	void update_weight(const Vector<matrix>& out_grad);
 	
 	Vector<double> flatten();
 };

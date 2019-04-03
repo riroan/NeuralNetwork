@@ -2,6 +2,10 @@
 #include<iostream>
 #include<cassert>
 #include<random>
+#include<cstring>
+#include<chrono>
+#include<thread>
+#include<future>
 
 template<class T>
 class Vector
@@ -190,4 +194,6 @@ public:
 			ret[i - start] = values[i];
 		return ret;
 	}
+
+	friend std::ostream &operator<<(std::ostream &os, const Vector<T>& v);
 };

@@ -36,6 +36,9 @@
     <ClInclude Include="Model.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
+    <ClInclude Include="Convolution3D.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="matrix.cpp">
@@ -60,6 +63,30 @@
       <Filter>소스 파일</Filter>
     </ClCompile>
     <ClCompile Include="Model.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="error_test.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="future_test.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="mnist_example.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="imdb_example.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="mnist_Convolution.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="Convolution3D.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="test.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="Vector.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
   </ItemGroup>
