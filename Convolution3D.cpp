@@ -1,7 +1,7 @@
 #include"Convolution3D.h"
 
 Convolution3D::Convolution3D(const int& x, const int& y, const int& f_w, const int& f_h, const int& c_input, const int& c_output, const int& layer_type, const char * pad, const int& stride)
-	:input_channel(c_input), output_channel(c_output), input_cnt(0)
+	:input_channel(c_input), output_channel(c_output), input_cnt(0), pool(0), usePool(false)
 {
 	kernel = Vector<Vector<Convolution2D>>(output_channel);
 	for (unsigned int i = 0; i < output_channel; i++)
@@ -31,6 +31,10 @@ void Convolution3D::feedForward()
 		for (unsigned int j = 0; j < output_channel; j++)
 		{
 			kernel[j][i].feedForward();
+#ifdef MAXPOOL
+			if (usePool)
+				doPooling(j, i);
+#endif
 			output[j] += kernel[j][i].output;
 		}
 	for (unsigned int j = 0; j < output_channel; j++)
@@ -47,9 +51,16 @@ void Convolution3D::setInput(const matrix& input)
 
 void Convolution3D::getGrad(const Vector<matrix>& out_grad)
 {
+#ifdef MAXPOOL
+	if (usePool)
+		for (unsigned int i = 0; i < output_channel; i++)
+			out_grad[i] = pool.getGrad(out_grad[i]);
+#endif
+
 	for (unsigned int i = 0; i < output_channel; i++)
 		for (unsigned int j = 0; j < input_channel; j++)
-			kernel[i][j].getGrad(out_grad[i]);
+			kernel[i][j].getGrad(out_grad[i].elementProduct(kernel[i][j].gradient));
+
 	for (unsigned int i = 0; i < input_channel; i++)
 	{
 		dx[i].assign_random(0.0, 0.0);
@@ -76,4 +87,9 @@ Vector<double> Convolution3D::flatten()
 			for (int k = 0; k < output[0].col; k++)
 				ret[cnt++] = output[i].getValue(j, k);
 	return ret;
+}
+
+void Convolution3D::doPooling(const int& j, const int& i)
+{
+	pool.maxPool(kernel[j][i].output, kernel[j][i].gradient);
 }

@@ -1,6 +1,8 @@
 #include "Model.h"
 using namespace std;
 
+//#define MAXPOOL
+
 Model::Model()
 	:layer_A(0), layer_C(0), num_of_layer(0), num_of_affine(0), num_of_convolution(0), Error(0.0)
 {}
@@ -38,7 +40,11 @@ void Model::addConvolution(const int& f_w, const int& f_h, const int& output_cha
 	assert(!num_of_affine && num_of_convolution);
 	num_of_layer++;
 	num_of_convolution++;
-	layer_C.push(new Convolution3D(layer_C[num_of_convolution - 2]->output[0].col, layer_C[num_of_convolution - 2]->output[0].row, f_w, f_h, layer_C[num_of_convolution - 2]->output_channel, output_channel, activation, pad_type, stride));
+	int isPool = layer_C[num_of_convolution - 2]->pool.x;
+	if (isPool == 0)
+		layer_C.push(new Convolution3D(layer_C[num_of_convolution - 2]->output[0].col, layer_C[num_of_convolution - 2]->output[0].row, f_w, f_h, layer_C[num_of_convolution - 2]->output_channel, output_channel, activation, pad_type, stride));
+	else
+		layer_C.push(new Convolution3D(layer_C[num_of_convolution - 2]->output[0].col / isPool, layer_C[num_of_convolution - 2]->output[0].row / isPool, f_w, f_h, layer_C[num_of_convolution - 2]->output_channel, output_channel, activation, pad_type, stride));
 }
 
 void Model::addConvolution(const int& _row, const int& _col, const int& f_w, const int& f_h, const int& input_channel, const int& output_channel, const int& activation, const int& stride, const char * pad_type)
@@ -47,6 +53,18 @@ void Model::addConvolution(const int& _row, const int& _col, const int& f_w, con
 	num_of_layer++;
 	num_of_convolution++;
 	layer_C.push(new Convolution3D(_col, _row, f_w, f_h, input_channel, output_channel, activation, pad_type, stride));
+}
+
+void Model::maxPool(const int& size)
+{
+	assert(num_of_affine == 0 && num_of_convolution);
+	layer_C[num_of_convolution - 1]->pool = Pooling(size);
+	layer_C[num_of_convolution - 1]->usePool = true;
+	for (unsigned int i = 0; i < layer_C[num_of_convolution - 1]->output_channel; i++)
+	{
+		layer_C[num_of_convolution - 1]->output[i].resize(layer_C[num_of_convolution - 1]->output[i].row / size, layer_C[num_of_convolution - 1]->output[i].row / size);
+		layer_C[num_of_convolution - 1]->output[i].assign_random(0.0, 0.0);
+	}
 }
 
 void Model::setInput(const matrix& m)
@@ -72,7 +90,7 @@ void Model::forwardPropagation()
 			if (i < num_of_convolution - 1)
 			{
 				layer_C[i + 1]->input_cnt = 0;
-				for (int j = 0; j < layer_C[i]->output_channel; j++)
+				for (unsigned int j = 0; j < layer_C[i]->output_channel; j++)
 					layer_C[i + 1]->setInput(layer_C[i]->output[j]);
 			}
 		}

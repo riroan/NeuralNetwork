@@ -154,6 +154,7 @@
     <ClInclude Include="matrix.h" />
     <ClInclude Include="Model.h" />
     <ClInclude Include="Network.h" />
+    <ClInclude Include="Pooling.h" />
     <ClInclude Include="Vector.h" />
   </ItemGroup>
   <ItemGroup>
@@ -163,7 +164,6 @@
     <ClCompile Include="Convolution3D.cpp" />
     <ClCompile Include="error_test.cpp" />
     <ClCompile Include="ex.cpp" />
-    <ClCompile Include="future_test.cpp" />
     <ClCompile Include="imdb_example.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="matrix.cpp" />
@@ -171,6 +171,7 @@
     <ClCompile Include="mnist_example.cpp" />
     <ClCompile Include="Model.cpp" />
     <ClCompile Include="Network.cpp" />
+    <ClCompile Include="Pooling.cpp" />
     <ClCompile Include="test.cpp" />
     <ClCompile Include="Vector.cpp" />
   </ItemGroup>

@@ -2,7 +2,7 @@
 #define LAMBDA 0.7
 
 Affine::Affine(const int& _num_input, const int& _num_output, const int& activation)
-	:learning_rate(0.01)
+	:learning_rate(0.1)
 {
 	layer_act = activation;
 	num_input = _num_input; num_output = _num_output;

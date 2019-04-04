@@ -39,6 +39,9 @@
     <ClInclude Include="Convolution3D.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
+    <ClInclude Include="Pooling.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="matrix.cpp">
@@ -68,9 +71,6 @@
     <ClCompile Include="error_test.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="future_test.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
     <ClCompile Include="mnist_example.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
@@ -87,6 +87,9 @@
       <Filter>소스 파일</Filter>
     </ClCompile>
     <ClCompile Include="Vector.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="Pooling.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
   </ItemGroup>
