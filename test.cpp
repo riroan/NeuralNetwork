@@ -12,34 +12,22 @@ int main()
 	m2.assign_random(0.0, 1.0);
 	Vector<double> y(2, 2.0);
 
-	model.addConvolution(5, 5, 3, 3, 3, 2);
+	model.addConvolution(5, 5, 3, 3, 3, 2, 1, 1, "same");
+	model.addConvolution(3, 3);
 	model.addAffine(2, RELU);
 	model.setInput(m);
 	model.setInput(m1);
 	model.setInput(m2);
 
-	//model.layer_C[0]->kernel[0][0].filter.print();
-	//cout << model.layer_C[0]->kernel[0][0].bias;
-	//cout << endl;
-	//model.layer_C[0]->kernel[0][1].filter.print();
-	//cout << model.layer_C[0]->kernel[0][1].bias;
-	//cout << endl;
-	//model.layer_C[0]->kernel[0][2].filter.print();
-	//cout << model.layer_C[0]->kernel[0][2].bias;
-	//cout << endl;
-	//model.layer_C[0]->kernel[1][0].filter.print();
-	//cout << model.layer_C[0]->kernel[1][0].bias;
-	//cout << endl;
-	//model.layer_C[0]->kernel[1][1].filter.print();
-	//cout << model.layer_C[0]->kernel[1][1].bias;
-	//cout << endl;
-	//model.layer_C[0]->kernel[1][2].filter.print();
-	//cout << model.layer_C[0]->kernel[1][2].bias;
-	//cout << endl;
-	//cout << model.layer_A[0]->w << endl;
-	//cout << model.layer_A[0]->b << endl;
 
-	model.forwardPropagation();
 
-	model.backPropagation(y);
+	for (int i = 0; i < 10000; i++)
+	{
+		model.forwardPropagation();
+
+		model.backPropagation(y);
+		cout << model.getOutput() << endl;
+		cout << " Error " << i << " : " << model.Error << endl;
+	}
+
 }

@@ -41,7 +41,7 @@ void Model::addConvolution(const int& f_w, const int& f_h, const int& output_cha
 	layer_C.push(new Convolution3D(layer_C[num_of_convolution - 2]->output[0].col, layer_C[num_of_convolution - 2]->output[0].row, f_w, f_h, layer_C[num_of_convolution - 2]->output_channel, output_channel, activation, pad_type, stride));
 }
 
-void Model::addConvolution(const int& _row, const int& _col, const int& f_w, const int& f_h, const int& input_channel, const int& output_channel, const int& activation, const int& stride, const int& padding, const char * pad_type)
+void Model::addConvolution(const int& _row, const int& _col, const int& f_w, const int& f_h, const int& input_channel, const int& output_channel, const int& activation, const int& stride, const char * pad_type)
 {
 	assert(!num_of_affine);
 	num_of_layer++;
@@ -77,8 +77,6 @@ void Model::forwardPropagation()
 			}
 		}
 		layer_A[0]->input = layer_C[num_of_convolution - 1]->flatten();
-		std::cout << "layerA" << std::endl;
-		std::cout << layer_A[0]->input;
 	}
 
 	for (int i = 0; i < num_of_affine; i++)

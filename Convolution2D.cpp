@@ -1,7 +1,7 @@
 #include"Convolution2D.h"
 
 Convolution2D::Convolution2D(const int& _row, const int& _col, const int& f_w, const int& f_h, const int& _layer_act, const int& _stride, const char * _pad_type)
-	:input(_row, _col), stride(_stride), filter(f_h, f_w), learning_rate(0.01), gradient(_row, _col)
+	:input(_row, _col), stride(_stride), filter(f_h, f_w), learning_rate(0.1), gradient(_row, _col)
 {
 	layer_act = _layer_act;
 
@@ -78,7 +78,8 @@ void Convolution2D::getGrad(matrix out_grad)
 	for (int i = -padding_row, x = 0; i < filter.row + padding_row - grad_r.row + 1; i++, x++)
 		for (int j = -padding_col, y = 0; j < filter.col + padding_col - grad_r.col + 1; j++, y++)
 		{
-			gradient.getValue(x, y) = filter.Convolution(grad_r, i, j);
+			//gradient.getValue(x, y) = filter.Convolution(grad_r, i, j);
+			gradient.getValue(x, y) = grad_r.Convolution(filter, i, j);
 			if (layer_act == RELU)
 				gradient.getValue(x, y) *= grad_ReLU(input.getValue(x, y));
 			else if (layer_act == LRELU)

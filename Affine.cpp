@@ -110,8 +110,6 @@ void Affine::getGrad()
 		out_grad *= dropout;
 		out_grad /= dropout_rate;
 	}
-
-	std::cout << w.Transpose() << std::endl << out_grad;
 	gradient = w.Transpose()*out_grad;
 	for (int i = 0; i < gradient.size; i++)
 	{
@@ -122,7 +120,6 @@ void Affine::getGrad()
 		else if (layer_act == SIGMOID)
 			gradient[i] *= grad_sigmoid(input[i]);
 	}
-	std::cout << gradient;
 }
 
 void Affine::setInput(const Vector<double>& _input)
