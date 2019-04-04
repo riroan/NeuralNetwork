@@ -106,16 +106,25 @@ void Affine::getGrad()
 		out_grad *= dropout;
 		out_grad /= dropout_rate;
 	}
-	gradient = w.Transpose()*out_grad;
-	for (int i = 0; i < gradient.size; i++)
+	for (int i = 0; i < out_grad.size; i++)
 	{
 		if (layer_act == RELU)
-			gradient[i] *= grad_ReLU(input[i]);
+			out_grad[i] *= grad_ReLU(output[i]);
 		else if (layer_act == LRELU)
-			gradient[i] *= grad_LReLU(input[i]);
+			out_grad[i] *= grad_LReLU(output[i]);
 		else if (layer_act == SIGMOID)
-			gradient[i] *= grad_sigmoid(input[i]);
+			out_grad[i] *= grad_sigmoid(output[i]);
 	}
+	gradient = w.Transpose()*out_grad;
+	//for (int i = 0; i < gradient.size; i++)
+	//{
+	//	if (layer_act == RELU)
+	//		gradient[i] *= grad_ReLU(input[i]);
+	//	else if (layer_act == LRELU)
+	//		gradient[i] *= grad_LReLU(input[i]);
+	//	else if (layer_act == SIGMOID)
+	//		gradient[i] *= grad_sigmoid(input[i]);
+	//}
 }
 
 void Affine::setInput(const Vector<double>& _input)

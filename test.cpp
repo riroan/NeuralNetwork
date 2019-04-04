@@ -4,13 +4,13 @@ using namespace std;
 int main()
 {
 	Model model;
-	model.addConvolution(5, 5, 2, 2, 1, 1);
+	model.addConvolution(5, 5, 3, 3, 1, 1);
 	//model.maxPool(2);
 	model.addAffine(2, RELU);
 
 	matrix m(5, 5);
 	m.assign_random(0.0, 1.0);
-	
+
 	Vector<double> v(2);
 	v.assign_random(2.0, 2.0);
 

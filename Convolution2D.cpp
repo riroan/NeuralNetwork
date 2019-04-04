@@ -73,20 +73,25 @@ void Convolution2D::backPropagation(const matrix& out_grad)
 
 void Convolution2D::getGrad(const matrix& out_grad)
 {
-	matrix grad_r = out_grad.reverse();
+	matrix grad_r = out_grad;
 	int padding_row = (gradient.row - 1 - filter.row + out_grad.row) / 2;
 	int padding_col = (gradient.col - 1 - filter.col + out_grad.col) / 2;
+
+	for (int i = 0; i < output.row; i++)
+		for (int j = 0; j < output.col; j++)
+			if (layer_act == RELU)
+				grad_r.getValue(i, j) *= grad_ReLU(output.getValue(i, j));
+			else if (layer_act == LRELU)
+				grad_r.getValue(i, j) *= grad_LReLU(output.getValue(i, j));
+			else if (layer_act == SIGMOID)
+				grad_r.getValue(i, j) *= grad_sigmoid(output.getValue(i, j));
+	grad_r = grad_r.reverse();
+
 	for (int i = -padding_row, x = 0; i < filter.row + padding_row - grad_r.row + 1; i++, x++)
 		for (int j = -padding_col, y = 0; j < filter.col + padding_col - grad_r.col + 1; j++, y++)
 		{
-			//gradient.getValue(x, y) = filter.Convolution(grad_r, i, j);
-			gradient.getValue(x, y) = grad_r.Convolution(filter, i, j);
-			if (layer_act == RELU)
-				gradient.getValue(x, y) *= grad_ReLU(output.getValue(x, y));
-			else if (layer_act == LRELU)
-				gradient.getValue(x, y) *= grad_LReLU(output.getValue(x, y));
-			else if (layer_act == SIGMOID)
-				gradient.getValue(x, y) *= grad_sigmoid(output.getValue(x, y));
+			gradient.getValue(x, y) = filter.Convolution(grad_r, i, j);
+			//gradient.getValue(x, y) = grad_r.Convolution(filter, i, j);
 		}
 }
 
@@ -99,12 +104,13 @@ void Convolution2D::update_weight(const matrix& out_grad)
 		for (int j = 0; j < dw.col; j++)
 		{
 			dw.getValue(i, j) = input.Convolution(out_grad, i, j, learning_rate);
-			dw.getValue(i, j) /= static_cast<double>(d_size);
+			//dw.getValue(i, j) /= static_cast<double>(d_size);
 		}
+
 	for (int i = 0; i < out_grad.row*out_grad.col; i++)
 		db += out_grad[i] * learning_rate;
 
-	db /= static_cast<double>(d_size);
+	//db /= static_cast<double>(d_size);
 
 	filter -= dw;
 	bias -= db;
@@ -113,17 +119,17 @@ void Convolution2D::update_weight(const matrix& out_grad)
 void Convolution2D::apply_sigmoid()
 {
 	for (int i = 0; i < output.row*output.col; i++)
-		sigmoid(output[i]);
+		output[i] = sigmoid(output[i]);
 }
 
 void Convolution2D::apply_ReLU()
 {
 	for (int i = 0; i < output.row*output.col; i++)
-		ReLU(output[i]);
+		output[i]=ReLU(output[i]);
 }
 
 void Convolution2D::apply_LReLU()
 {
 	for (int i = 0; i < output.row*output.col; i++)
-		LReLU(output[i]);
+		output[i] = LReLU(output[i]);
 }
