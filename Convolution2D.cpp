@@ -1,10 +1,11 @@
 #include"Convolution2D.h"
 
 Convolution2D::Convolution2D(const int& _row, const int& _col, const int& f_w, const int& f_h, const int& _layer_act, const int& _stride, const char * _pad_type)
-	:input(_row, _col), stride(_stride), filter(f_h, f_w), learning_rate(0.01), gradient(_row, _col)
+	:input(_row, _col), stride(_stride), filter(f_h, f_w), learning_rate(0.05), gradient(_row, _col)
 {
 	layer_act = _layer_act;
 
+	gradient.assign_random(0.0, 0.0);
 	filter.assign_random(0.0, 1.0);
 
 	if (strcmp(_pad_type, "same") == 0)
@@ -70,7 +71,7 @@ void Convolution2D::backPropagation(const matrix& out_grad)
 	update_weight(temp);
 }
 
-void Convolution2D::getGrad(matrix out_grad)
+void Convolution2D::getGrad(const matrix& out_grad)
 {
 	matrix grad_r = out_grad.reverse();
 	int padding_row = (gradient.row - 1 - filter.row + out_grad.row) / 2;
@@ -81,15 +82,15 @@ void Convolution2D::getGrad(matrix out_grad)
 			//gradient.getValue(x, y) = filter.Convolution(grad_r, i, j);
 			gradient.getValue(x, y) = grad_r.Convolution(filter, i, j);
 			if (layer_act == RELU)
-				gradient.getValue(x, y) *= grad_ReLU(input.getValue(x, y));
+				gradient.getValue(x, y) *= grad_ReLU(output.getValue(x, y));
 			else if (layer_act == LRELU)
-				gradient.getValue(x, y) *= grad_LReLU(input.getValue(x, y));
+				gradient.getValue(x, y) *= grad_LReLU(output.getValue(x, y));
 			else if (layer_act == SIGMOID)
-				gradient.getValue(x, y) *= grad_sigmoid(input.getValue(x, y));
+				gradient.getValue(x, y) *= grad_sigmoid(output.getValue(x, y));
 		}
 }
 
-void Convolution2D::update_weight(matrix out_grad)
+void Convolution2D::update_weight(const matrix& out_grad)
 {
 	matrix dw(filter.row, filter.col);
 	double db = 0.0;
@@ -100,16 +101,12 @@ void Convolution2D::update_weight(matrix out_grad)
 			dw.getValue(i, j) = input.Convolution(out_grad, i, j, learning_rate);
 			dw.getValue(i, j) /= static_cast<double>(d_size);
 		}
-
 	for (int i = 0; i < out_grad.row*out_grad.col; i++)
 		db += out_grad[i] * learning_rate;
 
 	db /= static_cast<double>(d_size);
 
-	for (int i = 0; i < filter.row; i++)
-		for (int j = 0; j < filter.col; j++)
-			filter.getValue(i, j) -= dw.getValue(i, j);
-
+	filter -= dw;
 	bias -= db;
 }
 

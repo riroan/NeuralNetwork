@@ -74,9 +74,6 @@
     <ClCompile Include="mnist_example.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="imdb_example.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
     <ClCompile Include="mnist_Convolution.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>

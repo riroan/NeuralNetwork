@@ -31,7 +31,7 @@ public:
 	matrix productTranspose(const matrix& right);
 	matrix Transpose();
 	matrix applyPadding(const int& p);
-	matrix reverse();
+	matrix reverse() const;
 	matrix elementProduct(const matrix& right);
 
 	// operator overloading

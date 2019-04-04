@@ -109,8 +109,11 @@ void Model::backPropagation(const Vector<double>& y)
 {
 	assert(layer_A[num_of_affine - 1]->num_output == y.size);
 
-	layer_A[num_of_affine - 1]->getMSE(y);
-	layer_A[num_of_affine - 1]->getGrad();
+	if (num_of_affine)
+	{
+		layer_A[num_of_affine - 1]->getMSE(y);
+		layer_A[num_of_affine - 1]->getGrad();
+	}
 
 	for (int i = num_of_affine - 2; i >= 0; i--)
 	{

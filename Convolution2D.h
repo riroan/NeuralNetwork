@@ -8,9 +8,9 @@ public:
 	matrix filter;
 	matrix output;
 	matrix gradient;
-	int	   padding;
-	int    stride;
-	int	   layer_act;
+	short  padding;
+	short  stride;
+	short  layer_act;
 	double learning_rate;
 	double bias;
 
@@ -22,8 +22,8 @@ public:
 
 	// only padding is 0 and stride is 1
 	void backPropagation(const matrix& out_grad);
-	void getGrad(matrix out_grad);
-	void update_weight(matrix out_grad);
+	void getGrad(const matrix& out_grad);
+	void update_weight(const matrix& out_grad);
 
 	void apply_sigmoid();
 	void apply_ReLU();

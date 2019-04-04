@@ -2,7 +2,7 @@
 #define LAMBDA 0.7
 
 Affine::Affine(const int& _num_input, const int& _num_output, const int& activation)
-	:learning_rate(0.1)
+	:learning_rate(0.01)
 {
 	layer_act = activation;
 	num_input = _num_input; num_output = _num_output;
@@ -18,12 +18,8 @@ Affine::Affine(const int& _num_input, const int& _num_output, const int& activat
 	else
 		w.assign_random(0.0, 0.1);
 
-	r.init_matrix(num_output, num_input);
-	r.assign_random(0.0, 0.0);
 	rms.init_matrix(num_output, num_input);
 	rms.assign_random(0.0, 0.0);
-	v.init_matrix(num_output, num_input);
-	v.assign_random(0.0, 0.0);
 
 	b.assign_random(0.0, 0.0);
 	dropout_rate = 0.0;
@@ -143,36 +139,6 @@ void Affine::update_weight()
 		b[i] -= dg[i] * learning_rate;
 }
 
-void Affine::update_weight_AdaGrad()
-{
-	matrix dg = V2M(out_grad, out_grad.size, 1);
-	matrix x = V2M(input, 1, input.size);
-	matrix dw = dg * x;
-
-	for (int i = 0; i < r.row*r.col; i++)
-	{
-		r[i] += dw[i] * dw[i];
-		dw[i] = -learning_rate / (1e-7 + sqrt(r[i]))*dw[i];
-		w += dw[i];
-	}
-	for (int i = 0; i < b.size; i++)
-		b[i] -= dg[i] * learning_rate;
-}
-
-void Affine::update_weight_momentum()
-{
-	matrix dg = V2M(out_grad, out_grad.size, 1);
-	matrix x = V2M(input, 1, input.size);
-	matrix dw = dg * x;
-
-	v = v * 0.5 - dw * learning_rate;
-
-	w += v;
-
-	for (int i = 0; i < b.size; i++)
-		b[i] -= dg[i] * learning_rate;
-}
-
 void Affine::update_weight_RMSProp()
 {
 	matrix dg = V2M(out_grad, out_grad.size, 1);
@@ -203,11 +169,12 @@ void Affine::update_weight_RMSProp()
 		for (int j = 0; j < dw.col; j++)
 			dw.getValue(i, j) = learning_rate / sqrt(1e-6 + rms.getValue(i, j))*dw.getValue(i, j);
 	
+	//std::cout << dw << std::endl;
 
 	w -= dw;
 
 	for (int i = 0; i < b.size; i++)
-		b[i] -= dg[i] * learning_rate;
+		b[i] -= out_grad[i] * learning_rate;
 }
 
 void Affine::apply_dropOut(const double& rate)

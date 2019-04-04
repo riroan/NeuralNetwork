@@ -7,9 +7,9 @@ class Model
 public:
 	Vector<Affine *>		  layer_A;
 	Vector<Convolution3D *>   layer_C;
-	int						  num_of_layer;
-	int 					  num_of_affine;
-	int						  num_of_convolution;
+	short					  num_of_layer;
+	short					  num_of_affine;
+	short					  num_of_convolution;
 	double					  Error;
 
 	Model();

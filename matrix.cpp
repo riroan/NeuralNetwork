@@ -194,7 +194,7 @@ void matrix::operator/=(const double& v)
 			getValue(i, j) /= v;
 }
 
-matrix matrix::reverse()
+matrix matrix::reverse() const
 {
 	matrix ret(row, col);
 	for (int i = 0; i < row*col; i++)

@@ -5,8 +5,8 @@
 class Pooling
 {
 public:
-	unsigned x;
-	unsigned stride;
+	short x;
+	short stride;
 
 	Pooling(const int& _x);
 	matrix maxPool(const matrix& input, matrix& gradient);

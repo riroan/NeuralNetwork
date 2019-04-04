@@ -12,8 +12,8 @@ matrix Pooling::maxPool(const matrix& input, matrix& gradient)
 	{
 		double max = -1e100;
 		int px = 0, py = 0;
-		for (unsigned int i = y; i < y + stride; i++)
-			for (unsigned int j = x; j < x + stride; j++)
+		for (short i = y; i < y + stride; i++)
+			for (short j = x; j < x + stride; j++)
 			{
 				if (max < input.getValue(i, j))
 				{
@@ -22,8 +22,8 @@ matrix Pooling::maxPool(const matrix& input, matrix& gradient)
 					py = i;
 				}
 			}
-		for (unsigned int i = y; i < y + stride; i++)
-			for (unsigned int j = x; j < x + stride; j++)
+		for (short i = y; i < y + stride; i++)
+			for (short j = x; j < x + stride; j++)
 				if (!(i == py && j == px))
 					gradient.getValue(i, j) = 0;
 				else
@@ -46,8 +46,8 @@ matrix Pooling::getGrad(const matrix& out_grad)
 	matrix ret(out_grad.row*stride, out_grad.col * stride);
 	for (int i = 0; i < ret.row; i += stride)
 		for (int j = 0; j < ret.col; j += stride)
-			for (unsigned int k = i; k < i + stride; k++)
-				for (unsigned int l = j; l < j + stride; l++)
+			for (short k = i; k < i + stride; k++)
+				for (short l = j; l < j + stride; l++)
 					ret.getValue(k, l) = out_grad.getValue(i / stride, j / stride);
 	return ret;
 }

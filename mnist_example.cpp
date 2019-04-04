@@ -64,12 +64,17 @@
 //	//myNetwork.addAffine(28 * 28, 128, RELU);
 //	//myNetwork.addAffine(10, SOFTMAX);
 //
-//	myNetwork.addAffine(28 * 28, 10, SOFTMAX);
+//	myNetwork.addAffine(28 * 28, 250, RELU);
+//	myNetwork.addAffine(2000);
+//	myNetwork.addAffine(1500);
+//	myNetwork.addAffine(1000);
+//	myNetwork.addAffine(500);
+//	myNetwork.addAffine(10, SOFTMAX);
 //
-//	for (int r = 0; r < 5; r++)
+//	//for (int r = 0; r < 5; r++)
 //	{
 //		i = 0;
-//		int num_train = 60000;
+//		int num_train = 600;
 //		int cnt = 0;
 //		while (i < num_train) {
 //			fread(image, 28 * 28, 1, f_image);
@@ -82,18 +87,12 @@
 //			for (int j = 0; j < 28 * 28; j++)
 //				v[j] = (double)image[j] / 255.0;
 //
-//			auto sta = chrono::steady_clock::now();
-//
 //			myNetwork.setInput(v);
 //
 //			myNetwork.forwardPropagation();
 //
 //			myNetwork.backPropagation(y);
 //
-//			chrono::duration<double> dur = chrono::steady_clock::now() - sta;
-//			cout << dur.count() << endl;
-//
-//			getchar();
 //
 //			int answer = getAnswer(myNetwork.getOutput());
 //
@@ -101,9 +100,8 @@
 //				cnt++;
 //
 //			//getchar();
-//
 //			i++;
-//			if (i % 1000 == 0)
+//			if (i % 10 == 0)
 //				cout << i << " check Point Error : " << myNetwork.Error << endl;
 //		}
 //		cout << "Training End" << endl;
@@ -128,7 +126,7 @@
 //		imagewidth = read_int_bigendian(f_image);
 //		imageheight = read_int_bigendian(f_image);
 //
-//		int num_data = 10000;
+//		int num_data = 100;
 //
 //		i = 0;
 //		while (i < num_data) {
