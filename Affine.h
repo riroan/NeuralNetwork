@@ -39,8 +39,10 @@ public:
 	inline double sigmoid(const double& x) { return 1.0 / (1.0 + exp(-x)); }
 	inline double ReLU(const double& x) { return x > 0.0 ? x : 0.0; }
 	inline double LReLU(const double& x) { return x > 0.0 ? x : 1e-2*x; }
+	inline double Identity(const double& x) { return x; }
 
 	inline double grad_sigmoid(const double& y) { return (1.0 - y)*y; }
 	inline double grad_ReLU(const double& y) { return y > 0 ? 1.0 : 0.0; }
 	inline double grad_LReLU(const double& y) { return y > 0 ? 1.0 : 1e-2; }
+	inline double grad_Identity(const double& y) { return 1; }
 };

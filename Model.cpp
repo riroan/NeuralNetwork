@@ -28,8 +28,11 @@ void Model::addAffine(const int& _num_output, const int& activation)
 	assert(num_of_layer);
 	num_of_layer++;
 	num_of_affine++;
-	if (num_of_convolution&&num_of_affine == 1)
-		layer_A.push(new Affine(layer_C[num_of_convolution - 1]->output[0].row*layer_C[num_of_convolution - 1]->output[0].col*layer_C[num_of_convolution - 1]->output_channel, _num_output, activation));
+	if (num_of_convolution && num_of_affine == 1)
+//		if (layer_C[num_of_convolution - 1]->usePool)
+//			layer_A.push(new Affine(layer_C[num_of_convolution - 1]->output[0].row * layer_C[num_of_convolution - 1]->output[0].col * layer_C[num_of_convolution - 1]->output_channel / (double)(layer_C[num_of_convolution - 1]->pool.x * layer_C[num_of_convolution - 1]->pool.x), _num_output, activation));
+//		else
+			layer_A.push(new Affine(layer_C[num_of_convolution - 1]->output[0].row * layer_C[num_of_convolution - 1]->output[0].col * layer_C[num_of_convolution - 1]->output_channel, _num_output, activation));
 	else
 		layer_A.push(new Affine(layer_A[num_of_affine - 2]->num_output, _num_output, activation));
 }
@@ -41,10 +44,10 @@ void Model::addConvolution(const int& f_w, const int& f_h, const int& output_cha
 	num_of_layer++;
 	num_of_convolution++;
 	int isPool = layer_C[num_of_convolution - 2]->pool.x;
-	if (isPool == 0)
+	//if (isPool == 0)
 		layer_C.push(new Convolution3D(layer_C[num_of_convolution - 2]->output[0].col, layer_C[num_of_convolution - 2]->output[0].row, f_w, f_h, layer_C[num_of_convolution - 2]->output_channel, output_channel, activation, pad_type, stride));
-	else
-		layer_C.push(new Convolution3D(layer_C[num_of_convolution - 2]->output[0].col / isPool, layer_C[num_of_convolution - 2]->output[0].row / isPool, f_w, f_h, layer_C[num_of_convolution - 2]->output_channel, output_channel, activation, pad_type, stride));
+	//else
+	//	layer_C.push(new Convolution3D(layer_C[num_of_convolution - 2]->output[0].col / isPool, layer_C[num_of_convolution - 2]->output[0].row / isPool, f_w, f_h, layer_C[num_of_convolution - 2]->output_channel, output_channel, activation, pad_type, stride));
 }
 
 void Model::addConvolution(const int& _row, const int& _col, const int& f_w, const int& f_h, const int& input_channel, const int& output_channel, const int& activation, const int& stride, const char * pad_type)
@@ -86,6 +89,7 @@ void Model::forwardPropagation()
 	{
 		for (int i = 0; i < num_of_convolution; i++)
 		{
+			//std::cout << std::endl;
 			layer_C[i]->feedForward();
 			if (i < num_of_convolution - 1)
 			{
@@ -103,6 +107,8 @@ void Model::forwardPropagation()
 		if (i < num_of_affine - 1)
 			layer_A[i + 1]->input = layer_A[i]->output;
 	}
+	//if (num_of_convolution)
+		//layer_C[0]->input_cnt = 0;
 }
 
 void Model::backPropagation(const Vector<double>& y)
@@ -114,7 +120,6 @@ void Model::backPropagation(const Vector<double>& y)
 		layer_A[num_of_affine - 1]->getMSE(y);
 		layer_A[num_of_affine - 1]->getGrad();
 	}
-
 	for (int i = num_of_affine - 2; i >= 0; i--)
 	{
 		layer_A[i]->setGrad(layer_A[i + 1]->gradient);
@@ -129,7 +134,7 @@ void Model::backPropagation(const Vector<double>& y)
 	}
 
 	for (int i = num_of_affine - 1; i >= 0; i--)
-		layer_A[i]->update_weight();
+		layer_A[i]->update_weight_RMSProp();
 	if (num_of_convolution)
 	{
 		layer_C[num_of_convolution - 1]->update_weight(V2VM(layer_A[0]->gradient, layer_C[num_of_convolution - 1]->output_channel, layer_C[num_of_convolution - 1]->output[0].row, layer_C[num_of_convolution - 1]->output[0].col));

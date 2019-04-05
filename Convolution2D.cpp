@@ -1,12 +1,15 @@
 #include"Convolution2D.h"
 
 Convolution2D::Convolution2D(const int& _row, const int& _col, const int& f_w, const int& f_h, const int& _layer_act, const int& _stride, const char * _pad_type)
-	:input(_row, _col), stride(_stride), filter(f_h, f_w), learning_rate(0.01), gradient(_row, _col), rms(f_h,f_w)
+	:input(_row, _col), stride(_stride), filter(f_h, f_w), learning_rate(0.1), gradient(_row, _col), rms(f_h,f_w)
 {
 	layer_act = _layer_act;
 
 	gradient.assign_random(0.0, 0.0);
-	filter.assign_random(0.0, 1.0);
+	if (layer_act == RELU || layer_act == LRELU)
+		filter.assign_random_n(sqrt(_row * _col) / 2.0);
+	else
+		filter.assign_random(0.0, 1.0);
 
 	if (strcmp(_pad_type, "same") == 0)
 		padding = (stride * (input.row - 1) - input.row + filter.row) / 2;
@@ -21,7 +24,8 @@ Convolution2D::Convolution2D(const int& _row, const int& _col, const int& f_w, c
 	output.assign_random(0.0, 0.0);
 }
 
-Convolution2D::Convolution2D(const int& f_w, const int& f_h, const int& _layer_act, const int& _stride, const char * _pad_type)
+Convolution2D::Convolution2D(const int& f_w, const int& f_h, const int& _layer_act, const int& _stride, const char* _pad_type)
+	:learning_rate(0.01), stride(_stride), bias(0.0)
 {
 	layer_act = _layer_act;
 
@@ -75,6 +79,7 @@ void Convolution2D::backPropagation(const matrix& out_grad)
 void Convolution2D::getGrad(const matrix& out_grad)
 {
 	matrix grad_r = out_grad;
+	gradient.resize(input.row, input.col);
 	int padding_row = (gradient.row - 1 - filter.row + out_grad.row) / 2;
 	int padding_col = (gradient.col - 1 - filter.col + out_grad.col) / 2;
 

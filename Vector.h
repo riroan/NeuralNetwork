@@ -6,6 +6,7 @@
 #include<chrono>
 #include<thread>
 #include<future>
+#include<omp.h>
 
 template<class T>
 class Vector
@@ -54,6 +55,13 @@ public:
 		size = _size;
 		values = new T[size];
 		*this = temp;
+	}
+
+	void resize_and_delete(const int& _size)
+	{
+		delete[] values;
+		size = _size;
+		values = new T[size];
 	}
 
 	void resize(const int& _size, const T& assign)
@@ -195,5 +203,5 @@ public:
 		return ret;
 	}
 
-	friend std::ostream &operator<<(std::ostream &os, const Vector<T>& v);
+	friend std::ostream& operator<<(std::ostream& os, const Vector<T>& v);
 };

@@ -7,7 +7,7 @@ Convolution3D::Convolution3D(const int& x, const int& y, const int& f_w, const i
 	{
 		kernel[i] = Vector<Convolution2D>(input_channel);
 		for (unsigned int j = 0; j < input_channel; j++)
-			kernel[i][j] = Convolution2D(y, x, f_w, f_h, layer_type, stride);
+			kernel[i][j] = Convolution2D(y, x, f_w, f_h, layer_type, stride, pad);
 	}
 	output = Vector<matrix>(output_channel);
 	for (unsigned int i = 0; i < output_channel; i++)
@@ -16,18 +16,11 @@ Convolution3D::Convolution3D(const int& x, const int& y, const int& f_w, const i
 		output[i].assign_random(0.0, 0.0);
 	}
 	dx = Vector<matrix>(input_channel);
-	for (unsigned int i = 0; i < input_channel; i++)
-	{
-		dx[i] = matrix(kernel[0][i].gradient.row, kernel[0][i].gradient.col);
-		dx[i].assign_random(0.0, 0.0);
-	}
 }
 
 void Convolution3D::feedForward()
 {
 	assert(input_cnt == input_channel);
-	for (unsigned int j = 0; j < output_channel; j++)
-		output[j].assign_random(0.0, 0.0);
 
 	for (unsigned int i = 0; i < input_channel; i++)
 		for (unsigned int j = 0; j < output_channel; j++)
@@ -36,6 +29,8 @@ void Convolution3D::feedForward()
 			if (usePool)
 				doPooling(j, i);
 			output[j] += kernel[j][i].output;
+			if (usePool)
+				kernel[j][i].output.resize(kernel[j][i].output.row * pool.x, kernel[j][i].output.col * pool.x);
 		}
 	for (unsigned int j = 0; j < output_channel; j++)
 		output[j] /= input_channel;
@@ -57,13 +52,21 @@ void Convolution3D::getGrad(const Vector<matrix>& out_grad)
 
 	for (unsigned int i = 0; i < output_channel; i++)
 		for (unsigned int j = 0; j < input_channel; j++)
-			if(usePool)
+		{
+			if (usePool)
+			{
+				//std::cout << out_grad[i].row << ", " << out_grad[i].col << ", " << kernel[i][j].gradient.row << ", " << kernel[i][j].gradient.col << std::endl;
 				kernel[i][j].getGrad(out_grad[i].elementProduct(kernel[i][j].gradient));
+				//std::cout << out_grad[i].row << ", " << out_grad[i].col << ", " << kernel[i][j].gradient.row << ", " << kernel[i][j].gradient.col << std::endl;
+				//out_grad[i] = kernel[i][j].gradient;
+			}
 			else
 				kernel[i][j].getGrad(out_grad[i]);
+		}
 
 	for (unsigned int i = 0; i < input_channel; i++)
 	{
+		dx[i].resize(kernel[0][i].gradient.row, kernel[0][i].gradient.col);
 		dx[i].assign_random(0.0, 0.0);
 		for (unsigned int j = 0; j < output_channel; j++)
 			dx[i] += kernel[j][i].gradient;
@@ -92,5 +95,6 @@ Vector<double> Convolution3D::flatten()
 
 void Convolution3D::doPooling(const int& j, const int& i)
 {
+	//std::cout << kernel[j][i].output << std::endl;
 	kernel[j][i].output = pool.maxPool(kernel[j][i].output, kernel[j][i].gradient);
 }

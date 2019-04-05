@@ -8,6 +8,7 @@ Pooling::Pooling(const int& _x)
 
 matrix Pooling::maxPool(const matrix& input, matrix& gradient)
 {
+	gradient.resize(input.row, input.col);
 	auto f = [&](const int& x, const int& y)
 	{
 		double max = -1e100;

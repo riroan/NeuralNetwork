@@ -1,5 +1,6 @@
 #pragma once
 #include "Vector.h"
+#define IDENTITY 0
 #define RELU 1
 #define LRELU 2
 #define SIGMOID 3

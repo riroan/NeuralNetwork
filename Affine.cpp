@@ -2,7 +2,7 @@
 #define LAMBDA 0.7
 
 Affine::Affine(const int& _num_input, const int& _num_output, const int& activation)
-	:learning_rate(0.01)
+	:learning_rate(0.1)
 {
 	layer_act = activation;
 	num_input = _num_input; num_output = _num_output;
@@ -13,8 +13,8 @@ Affine::Affine(const int& _num_input, const int& _num_output, const int& activat
 	w.init_matrix(num_output, num_input);
 
 	if (activation == RELU || activation == LRELU)
-		//w.assign_random_n(sqrt(num_input / 2.0));
-		w.assign_random(0.0, 0.1);
+		w.assign_random_n(sqrt(num_input / 2.0));
+		//w.assign_random(0.0, 0.1);
 	else
 		w.assign_random(0.0, 0.1);
 

@@ -7,6 +7,7 @@ class Convolution3D
 public:
 	Vector<Vector<Convolution2D>> kernel;
 	Vector<matrix>				  output;
+	Vector<matrix>				  pOutput;
 	Vector<matrix>				  dx;
 	unsigned					  input_channel;
 	unsigned					  output_channel;

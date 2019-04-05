@@ -1,5 +1,4 @@
 #include"matrix.h"
-
 std::random_device rd;
 
 matrix::matrix(const int& _row, const int& _col)
@@ -21,6 +20,7 @@ void matrix::print() const
 	{
 		for (int j = 0; j < col; j++)
 			std::cout << " " << values[j + i * col];
+			//printf(" %.2lf", values[j + i * col]);
 		printf("\n");
 	}
 }
@@ -105,12 +105,10 @@ matrix matrix::operator*(const matrix& right)
 
 	int j, k;
 
-//#pragma omp parallel for private(j,k)
-
 	for (int i = 0; i < ret.row; i++)
 		for (j = 0; j < ret.col; j++)
 			for (k = 0; k < col; k++)
-				ret.getValue(i, j) += getValue(i, k)*right.getValue(k, j);
+				ret.getValue(i, j) += getValue(i, k) * right.getValue(k, j);
 
 	return ret;
 }
