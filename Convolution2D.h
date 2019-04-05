@@ -8,6 +8,7 @@ public:
 	matrix filter;
 	matrix output;
 	matrix gradient;
+	matrix rms;
 	short  padding;
 	short  stride;
 	short  layer_act;
@@ -24,6 +25,7 @@ public:
 	void backPropagation(const matrix& out_grad);
 	void getGrad(const matrix& out_grad);
 	void update_weight(const matrix& out_grad);
+	void update_weight_RMSProp(const matrix& out_grad);
 
 	void apply_sigmoid();
 	void apply_ReLU();

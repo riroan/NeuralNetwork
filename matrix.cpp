@@ -105,7 +105,7 @@ matrix matrix::operator*(const matrix& right)
 
 	int j, k;
 
-#pragma omp parallel for private(j,k)
+//#pragma omp parallel for private(j,k)
 
 	for (int i = 0; i < ret.row; i++)
 		for (j = 0; j < ret.col; j++)

@@ -129,7 +129,7 @@ void Model::backPropagation(const Vector<double>& y)
 	}
 
 	for (int i = num_of_affine - 1; i >= 0; i--)
-		layer_A[i]->update_weight_RMSProp();
+		layer_A[i]->update_weight();
 	if (num_of_convolution)
 	{
 		layer_C[num_of_convolution - 1]->update_weight(V2VM(layer_A[0]->gradient, layer_C[num_of_convolution - 1]->output_channel, layer_C[num_of_convolution - 1]->output[0].row, layer_C[num_of_convolution - 1]->output[0].col));

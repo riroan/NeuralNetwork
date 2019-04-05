@@ -26,6 +26,9 @@ Convolution3D::Convolution3D(const int& x, const int& y, const int& f_w, const i
 void Convolution3D::feedForward()
 {
 	assert(input_cnt == input_channel);
+	for (unsigned int j = 0; j < output_channel; j++)
+		output[j].assign_random(0.0, 0.0);
+
 	for (unsigned int i = 0; i < input_channel; i++)
 		for (unsigned int j = 0; j < output_channel; j++)
 		{
@@ -72,7 +75,7 @@ void Convolution3D::update_weight(const Vector<matrix>& out_grad)
 {
 	for (unsigned int i = 0; i < output_channel; i++)
 		for (unsigned int j = 0; j < input_channel; j++)
-			kernel[i][j].update_weight(out_grad[i]);
+			kernel[i][j].update_weight_RMSProp(out_grad[i]);
 }
 
 Vector<double> Convolution3D::flatten()

@@ -1,7 +1,7 @@
 #include"Convolution2D.h"
 
 Convolution2D::Convolution2D(const int& _row, const int& _col, const int& f_w, const int& f_h, const int& _layer_act, const int& _stride, const char * _pad_type)
-	:input(_row, _col), stride(_stride), filter(f_h, f_w), learning_rate(0.05), gradient(_row, _col)
+	:input(_row, _col), stride(_stride), filter(f_h, f_w), learning_rate(0.01), gradient(_row, _col), rms(f_h,f_w)
 {
 	layer_act = _layer_act;
 
@@ -16,6 +16,7 @@ Convolution2D::Convolution2D(const int& _row, const int& _col, const int& f_w, c
 	bias = (double)rand() / RAND_MAX;
 	int out_row = (input.row + 2 * padding - filter.row) / stride + 1;
 	int out_col = (input.col + 2 * padding - filter.col) / stride + 1;
+	rms.assign_random(0, 0);
 	output.resize(out_row, out_col);
 	output.assign_random(0.0, 0.0);
 }
@@ -111,6 +112,31 @@ void Convolution2D::update_weight(const matrix& out_grad)
 		db += out_grad[i] * learning_rate;
 
 	//db /= static_cast<double>(d_size);
+
+	filter -= dw;
+	bias -= db;
+}
+
+void Convolution2D::update_weight_RMSProp(const matrix& out_grad)
+{
+	matrix dw(filter.row, filter.col);
+	double db = 0.0;
+	double rho = 0.9;
+	int d_size = output.row*output.col;
+	for (int i = 0; i < dw.row; i++)
+		for (int j = 0; j < dw.col; j++)
+			dw.getValue(i, j) = input.Convolution(out_grad, i, j);
+
+	rms += rms * rho + dw.elementProduct(dw)*(1 - rho);
+
+	for (int i = 0; i < dw.row; i++)
+		for (int j = 0; j < dw.col; j++)
+			dw.getValue(i, j) = learning_rate / sqrt(1e-6 + rms.getValue(i, j))*dw.getValue(i, j);
+
+	for (int i = 0; i < out_grad.row*out_grad.col; i++)
+		db += out_grad[i] * learning_rate;
+
+	db /= static_cast<double>(d_size);
 
 	filter -= dw;
 	bias -= db;

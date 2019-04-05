@@ -116,15 +116,6 @@ void Affine::getGrad()
 			out_grad[i] *= grad_sigmoid(output[i]);
 	}
 	gradient = w.Transpose()*out_grad;
-	//for (int i = 0; i < gradient.size; i++)
-	//{
-	//	if (layer_act == RELU)
-	//		gradient[i] *= grad_ReLU(input[i]);
-	//	else if (layer_act == LRELU)
-	//		gradient[i] *= grad_LReLU(input[i]);
-	//	else if (layer_act == SIGMOID)
-	//		gradient[i] *= grad_sigmoid(input[i]);
-	//}
 }
 
 void Affine::setInput(const Vector<double>& _input)
@@ -141,9 +132,6 @@ void Affine::update_weight()
 	for (int i = 0; i < dw.row*dw.col; i++)
 		w[i] -= learning_rate * dw[i];
 
-	//double db = out_grad.get_mean();
-	//for (int i = 0; i < b.size; i++)
-	//	b[i] -= learning_rate * db;
 	for (int i = 0; i < b.size; i++)
 		b[i] -= dg[i] * learning_rate;
 }
@@ -156,29 +144,11 @@ void Affine::update_weight_RMSProp()
 	learning_rate = 0.001;
 	const double rho = 0.9;
 
-	rms = rms * rho + dw.elementProduct(dw) * (1 - rho);
-
-	//auto f = [&](const int& i) {
-	//	for (int j = 0; j < dw.col; j++)
-	//		dw.getValue(i, j) = learning_rate / sqrt(1e-6 + rms.getValue(i, j))*dw.getValue(i, j); 
-	//};
-
-	// naive thread : 0.001
-
-	//Vector<thread> v_thread(dw.row);
-	//for (int i = 0; i < dw.row; i++)
-	//	v_thread[i] = thread(f, i);
-
-	//for (int i = 0; i < dw.row; i++)
-	//	v_thread[i].join();
-
-	// no thread : 0.0003
+	rms += rms * rho + dw.elementProduct(dw) * (1 - rho);
 
 	for (int i = 0; i < dw.row; i++)
 		for (int j = 0; j < dw.col; j++)
 			dw.getValue(i, j) = learning_rate / sqrt(1e-6 + rms.getValue(i, j))*dw.getValue(i, j);
-	
-	//std::cout << dw << std::endl;
 
 	w -= dw;
 
