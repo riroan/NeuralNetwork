@@ -104,6 +104,7 @@
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp17</LanguageStandard>
+      <OpenMPSupport>false</OpenMPSupport>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -162,7 +163,7 @@
     <ClCompile Include="Convolution1D.cpp" />
     <ClCompile Include="Convolution2D.cpp" />
     <ClCompile Include="Convolution3D.cpp" />
-    <ClCompile Include="error_test.cpp" />
+    <ClCompile Include="matrix_test.cpp" />
     <ClCompile Include="ex.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="matrix.cpp" />

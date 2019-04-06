@@ -1,4 +1,5 @@
 #include"matrix.h"
+using namespace std;
 std::random_device rd;
 
 matrix::matrix(const int& _row, const int& _col)
@@ -103,11 +104,31 @@ matrix matrix::operator*(const matrix& right)
 	matrix ret(row, right.col);
 	ret.assign_random(0.0, 0.0);
 
-	int j, k;
+	// no thread : 3.3xx
+	// 2 thread : 1.7xx
+	// 4 thread : 1.0xx
+
+	//auto f = [&](const int& i_start, const int& i_end, const int& j_start, const int& j_end)
+	//{
+	//	for (int i = i_start; i < i_end; i++)
+	//		for (int j = j_start; j < j_end; j++)
+	//			for (int k = 0; k < col; k++)
+	//				ret.getValue(i, j) += getValue(i, k) * right.getValue(k, j);
+	//};
+
+	//Vector<std::future<void>> futures(4);
+
+	//futures[0] = std::async(f, 0, ret.row / 2, 0, ret.col / 2);
+	//futures[1] = std::async(f, 0, ret.row / 2, ret.col / 2, ret.col);
+	//futures[2] = std::async(f, ret.row / 2, ret.row, 0, ret.col / 2);
+	//futures[3] = std::async(f, ret.row / 2, ret.row, ret.col / 2, ret.col);
+
+	//for (int i = 0; i < 4; i++)
+	//	futures[i].get();
 
 	for (int i = 0; i < ret.row; i++)
-		for (j = 0; j < ret.col; j++)
-			for (k = 0; k < col; k++)
+		for (int j = 0; j < ret.col; j++)
+			for (int k = 0; k < col; k++)
 				ret.getValue(i, j) += getValue(i, k) * right.getValue(k, j);
 
 	return ret;
@@ -123,6 +144,7 @@ void matrix::operator=(const matrix& right)
 	row = right.row;
 	col = right.col;
 	values.resize(row * col);
+
 	for (int i = 0; i < row * col; i++)
 		values[i] = right[i];
 }
@@ -171,10 +193,12 @@ bool matrix::isValid(const int& i, const int& j)
 double matrix::Convolution(const matrix& m, const int& x, const int& y, const double& a)
 {
 	double sum = 0.0;
+
 	for (int i = 0; i < m.row; i++)
 		for (int j = 0; j < m.col; j++)
 			if (isValid(x + i, y + j))
 				sum += a * getValue(x + i, y + j) * m.getValue(i, j);
+
 	return sum;
 }
 
@@ -220,6 +244,7 @@ void matrix::operator+=(const matrix& right)
 {
 	assert(row == right.row);
 	assert(col == right.col);
+
 	for (int i = 0; i < row*col; i++)
 		values[i] += right[i];
 }

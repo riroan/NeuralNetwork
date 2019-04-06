@@ -22,16 +22,46 @@ void Convolution3D::feedForward()
 {
 	assert(input_cnt == input_channel);
 
-	for (unsigned int i = 0; i < input_channel; i++)
-		for (unsigned int j = 0; j < output_channel; j++)
-		{
-			kernel[j][i].feedForward();
-			if (usePool)
-				doPooling(j, i);
-			output[j] += kernel[j][i].output;
-			if (usePool)
-				kernel[j][i].output.resize(kernel[j][i].output.row * pool.x, kernel[j][i].output.col * pool.x);
-		}
+	// no thread : 3.5
+	// 2 threads : 3.0 ~ 3.5
+	// 4 threads : 2.9~3.1
+
+	auto f = [&](const int& i_start, const int& i_end, const int& j_start, const int& j_end)
+	{
+		for (unsigned int i = i_start; i < i_end; i++)
+			for (unsigned int j = j_start; j < j_end; j++)
+			{
+				kernel[j][i].feedForward();
+				if (usePool)
+					doPooling(j, i);
+				output[j] += kernel[j][i].output;
+				if (usePool)
+					kernel[j][i].output.resize(kernel[j][i].output.row * pool.x, kernel[j][i].output.col * pool.x);
+			}
+	};
+
+	Vector<std::future<void>> futures(4);
+	futures[0] = std::async(f, 0, input_channel / 2, 0, output_channel/2);
+	futures[1] = std::async(f, input_channel / 2, input_channel, 0, output_channel / 2);
+	futures[2] = std::async(f, 0, input_channel / 2, output_channel / 2, output_channel);
+	futures[3] = std::async(f, input_channel / 2, input_channel, output_channel / 2, output_channel);
+	
+	for (int i = 0; i < 4; i++)
+		futures[i].get();
+
+	// 0.0002 0.0007 0.0002
+
+	//for (unsigned int i = 0; i < input_channel; i++)
+	//	for (unsigned int j = 0; j < output_channel; j++)
+	//	{
+	//		kernel[j][i].feedForward();
+	//		if (usePool)
+	//			doPooling(j, i);
+	//		output[j] += kernel[j][i].output;
+	//		if (usePool)
+	//			kernel[j][i].output.resize(kernel[j][i].output.row * pool.x, kernel[j][i].output.col * pool.x);
+	//	}
+
 	for (unsigned int j = 0; j < output_channel; j++)
 		output[j] /= input_channel;
 }
@@ -50,19 +80,31 @@ void Convolution3D::getGrad(const Vector<matrix>& out_grad)
 		for (unsigned int i = 0; i < output_channel; i++)
 			out_grad[i] = pool.getGrad(out_grad[i]);
 
-	for (unsigned int i = 0; i < output_channel; i++)
-		for (unsigned int j = 0; j < input_channel; j++)
-		{
-			if (usePool)
-			{
-				//std::cout << out_grad[i].row << ", " << out_grad[i].col << ", " << kernel[i][j].gradient.row << ", " << kernel[i][j].gradient.col << std::endl;
-				kernel[i][j].getGrad(out_grad[i].elementProduct(kernel[i][j].gradient));
-				//std::cout << out_grad[i].row << ", " << out_grad[i].col << ", " << kernel[i][j].gradient.row << ", " << kernel[i][j].gradient.col << std::endl;
-				//out_grad[i] = kernel[i][j].gradient;
-			}
-			else
-				kernel[i][j].getGrad(out_grad[i]);
-		}
+	// no thread : 0.4,0.3,0.2
+
+	auto f = [&](const int& i_s, const int& i_e, const int& j_s, const int& j_e)
+	{
+		for (unsigned int i = i_s; i < i_e; i++)
+			for (unsigned int j = j_s; j < j_e; j++)
+				if (usePool)
+					kernel[i][j].getGrad(out_grad[i].elementProduct(kernel[i][j].gradient));
+				else
+					kernel[i][j].getGrad(out_grad[i]);
+	};
+	Vector<std::future<void>> futures(4);
+	futures[0] = std::async(f, 0, output_channel / 2, 0, input_channel / 2);
+	futures[1] = std::async(f, 0, output_channel / 2, input_channel / 2, input_channel);
+	futures[2] = std::async(f, output_channel / 2, output_channel, 0, input_channel / 2);
+	futures[3] = std::async(f, output_channel / 2, output_channel, input_channel / 2, input_channel);
+	for (int i = 0; i < 4; i++)
+		futures[i].get();
+
+	//for (unsigned int i = 0; i < output_channel; i++)
+	//	for (unsigned int j = 0; j < input_channel; j++)
+	//		if (usePool)
+	//			kernel[i][j].getGrad(out_grad[i].elementProduct(kernel[i][j].gradient));
+	//		else
+	//			kernel[i][j].getGrad(out_grad[i]);
 
 	for (unsigned int i = 0; i < input_channel; i++)
 	{
@@ -78,7 +120,7 @@ void Convolution3D::update_weight(const Vector<matrix>& out_grad)
 {
 	for (unsigned int i = 0; i < output_channel; i++)
 		for (unsigned int j = 0; j < input_channel; j++)
-			kernel[i][j].update_weight_RMSProp(out_grad[i]);
+			kernel[i][j].update_weight(out_grad[i]);
 }
 
 Vector<double> Convolution3D::flatten()

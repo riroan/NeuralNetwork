@@ -8,6 +8,7 @@ Convolution2D::Convolution2D(const int& _row, const int& _col, const int& f_w, c
 	gradient.assign_random(0.0, 0.0);
 	if (layer_act == RELU || layer_act == LRELU)
 		filter.assign_random_n(sqrt(_row * _col) / 2.0);
+		//filter.assign_random(0.0, 1.0);
 	else
 		filter.assign_random(0.0, 1.0);
 
@@ -95,10 +96,8 @@ void Convolution2D::getGrad(const matrix& out_grad)
 
 	for (int i = -padding_row, x = 0; i < filter.row + padding_row - grad_r.row + 1; i++, x++)
 		for (int j = -padding_col, y = 0; j < filter.col + padding_col - grad_r.col + 1; j++, y++)
-		{
 			gradient.getValue(x, y) = filter.Convolution(grad_r, i, j);
 			//gradient.getValue(x, y) = grad_r.Convolution(filter, i, j);
-		}
 }
 
 void Convolution2D::update_weight(const matrix& out_grad)

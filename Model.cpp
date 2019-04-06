@@ -85,21 +85,25 @@ void Model::setInput(const Vector<double>& v)
 
 void Model::forwardPropagation()
 {
+
 	if (num_of_convolution)
 	{
 		for (int i = 0; i < num_of_convolution; i++)
 		{
-			//std::cout << std::endl;
 			layer_C[i]->feedForward();
+
 			if (i < num_of_convolution - 1)
 			{
 				layer_C[i + 1]->input_cnt = 0;
 				for (unsigned int j = 0; j < layer_C[i]->output_channel; j++)
 					layer_C[i + 1]->setInput(layer_C[i]->output[j]);
 			}
+
+
 		}
 		layer_A[0]->input = layer_C[num_of_convolution - 1]->flatten();
 	}
+
 
 	for (int i = 0; i < num_of_affine; i++)
 	{
@@ -107,8 +111,6 @@ void Model::forwardPropagation()
 		if (i < num_of_affine - 1)
 			layer_A[i + 1]->input = layer_A[i]->output;
 	}
-	//if (num_of_convolution)
-		//layer_C[0]->input_cnt = 0;
 }
 
 void Model::backPropagation(const Vector<double>& y)
@@ -120,6 +122,7 @@ void Model::backPropagation(const Vector<double>& y)
 		layer_A[num_of_affine - 1]->getMSE(y);
 		layer_A[num_of_affine - 1]->getGrad();
 	}
+
 	for (int i = num_of_affine - 2; i >= 0; i--)
 	{
 		layer_A[i]->setGrad(layer_A[i + 1]->gradient);
@@ -134,7 +137,7 @@ void Model::backPropagation(const Vector<double>& y)
 	}
 
 	for (int i = num_of_affine - 1; i >= 0; i--)
-		layer_A[i]->update_weight_RMSProp();
+		layer_A[i]->update_weight();
 	if (num_of_convolution)
 	{
 		layer_C[num_of_convolution - 1]->update_weight(V2VM(layer_A[0]->gradient, layer_C[num_of_convolution - 1]->output_channel, layer_C[num_of_convolution - 1]->output[0].row, layer_C[num_of_convolution - 1]->output[0].col));

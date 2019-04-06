@@ -15,24 +15,42 @@ int main()
 	model.maxPool(2);
 	model.addConvolution(2, 2, 32, "valid");
 	model.maxPool(2);
+	model.addConvolution(3, 3, 64);
 	model.addAffine(10, RELU);
 	model.addAffine(5, RELU);
-	model.addAffine(2, IDENTITY);
+	model.addAffine(6, IDENTITY);
 
-	Vector<double> v(2);
-	v.assign_random(4.0, 4.0);
+	Vector<double> v(6);
+	v.assign_random(1.0, 1.0);
 	v[0] = 2.0;
+	v[1] = 4.0;
+	v[2] = 8.0;
+	v[3] = 16.0;
+	v[4] = 32.0;
 
 	model.setInput(m);
 	model.setInput(m1);
 	model.setInput(m2);
 
-	for (int i = 0; i < 10000; i++)
+	auto sta = std::chrono::steady_clock::now();
+
+	for (int i = 0; i < 1000; i++)
 	{
+
+		//auto sta = std::chrono::steady_clock::now();
+
 		model.forwardPropagation();
 
+		//std::chrono::duration <double> dur = std::chrono::steady_clock::now() - sta;
+		//std::cout << dur.count() << std::endl;
+
 		model.backPropagation(v);
-		if(i%100==0)
-			cout << i << " : "<< "Error : " << model.Error << ", output : " << model.getOutput() << endl << endl;
+
+
+		if (i % 1 == 0)
+			cout << i << " : " << "Error : " << model.Error << ", output : " << model.getOutput() << endl << endl;
+		//getchar();
 	}
+	std::chrono::duration <double> dur = std::chrono::steady_clock::now() - sta;
+	std::cout << dur.count() << std::endl;
 }
